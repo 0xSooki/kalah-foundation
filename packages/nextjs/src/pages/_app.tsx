@@ -1,6 +1,6 @@
 import 'tailwindcss/tailwind.css'
 import { ThemeProvider } from 'next-themes'
-import Provider from '@/components/Provider'
+import Provider from '@/components/shared/Provider'
 
 const App = ({ Component, pageProps }) => {
 	return (
