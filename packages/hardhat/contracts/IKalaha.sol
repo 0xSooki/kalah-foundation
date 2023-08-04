@@ -14,8 +14,8 @@ abstract contract IKalaha {
         uint256 _game
         )
         external view virtual returns (
-            address[2] players;
-            uint8[14] board;
+            address[2] memory players;
+            uint8[14] memory board;
             uint8 nonce;
             address winner;
         );
