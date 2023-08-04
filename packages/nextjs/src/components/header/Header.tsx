@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ConnectButton } from './ConnectButton'
 import ThemeSwitcher from './ThemeSwitcher'
 import { MENU_LIST } from '@/lib/consts'
-import Logo from './Logo'
+import Logo from '../shared/Logo'
 
 const Header = (): JSX.Element => {
 	return (
