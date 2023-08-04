@@ -1,0 +1,13 @@
+{
+  "name": "kalah-foundation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "nextjs": "cd packages/nextjs && yarn dev",
+    "hnode": "cd packages/hardhat && yarn hnode",
+    "deploy": "cd packages/hardhat && yarn deploy",
+    "export": "cd packages/hardhat && yarn export",
+    "install": "cd packages/nextjs && yarn install && cd ../hardhat && npm i"
+  }
+}
