@@ -9,10 +9,10 @@ contract Kalaha is IKalaha {
         uint256 _game
     )
         external view virtual override returns (
-            address[2] memory players;
-            uint8[14] memory board;
-            uint8 nonce;
-            address winner;
+            address[2] memory players,
+            uint8[14] memory board,
+            uint8 nonce,
+            address winner
         )
     {
         return (
