@@ -1,4 +1,3 @@
-import ThemeSwitcher from '@/components/ThemeSwitcher'
 import Header from '@/components/shared/Header'
 import { FC } from 'react'
 import Lock from '@/components/Lock'
