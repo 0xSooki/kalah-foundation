@@ -22,4 +22,10 @@ contract Kalaha is IKalaha {
             games[_game].winner
         );
     }
+    function newGame() external virtual override  {
+        gameID++;
+        games[gameID].players[0] = msg.sender;
+        games[gameID].board = [4,4,4,4,4,4,0,4,4,4,4,4,4,0];
+        games[gameID].nonce = 0;
+    }
 }

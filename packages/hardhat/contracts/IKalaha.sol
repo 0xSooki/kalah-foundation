@@ -19,4 +19,5 @@ abstract contract IKalaha {
             uint8 nonce,
             address winner
         );
+    function newGame() external virtual;
 }
