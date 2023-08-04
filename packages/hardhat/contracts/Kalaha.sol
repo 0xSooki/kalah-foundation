@@ -40,17 +40,28 @@ contract Kalaha is IKalaha {
         ) external virtual override {
             //modifier
             uint8[14] memory board = games[_game].board;
-            if (games[_game].nonce % 2 == 0) {
+            uint8 nonce = games[_game].nonce;
+            if (nonce % 2 == 0) {
                 uint8 t = board[6-x];
                 board[6-x] = 0;
                 for (uint i = 1; i < t+1; i++) {
                     board[(6-x+i)%14]++;
                 }
                 if ((6-x+t)%14 == 5) {
-                    games[_game].nonce += 2;
+                    nonce += 2;
                 }
                 else {
-                    games[_game].nonce++;
+                    nonce++;
+                }
+                games[_game].board = board;
+                games[_game].nonce = nonce;
+                emit Move(nonce, x);
+                bool b = true;
+                for (uint i = 7; i < 14; i++) {
+                    b = b && board[i] == 0;
+                }
+                if (games[_game].nonce % 2 == 1 && b) {
+                    emit Win(_game,games[_game].players[1], msg.sender);
                 }
             }
             else {
@@ -65,7 +76,16 @@ contract Kalaha is IKalaha {
                 else {
                     games[_game].nonce++;
                 }
+                games[_game].board = board;
+                games[_game].nonce = nonce;
+                emit Move(nonce, x);
+                bool b = true;
+                for (uint i = 0; i < 6; i++) {
+                    b = b && board[i] == 0;
+                }
+                if (games[_game].nonce % 2 == 0 && b) {
+                    emit Win(_game, games[_game].players[0], msg.sender);
+                }
             }
-            games[_game].board = board;
         }
 }

@@ -5,6 +5,8 @@ abstract contract IKalaha {
 
     event NewGame(uint256 _game, address _by);
     event Join(uint256 _game, address _by);
+    event Move(uint256 _nonce, uint8 _x);
+    event Win(uint256 _game, address _winner, address _by);
 
     struct Game {
         address[2] players;
