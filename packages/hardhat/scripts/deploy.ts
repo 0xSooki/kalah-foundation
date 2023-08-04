@@ -1,9 +1,30 @@
 import { ethers } from "hardhat";
 import * as fs from "fs";
 import * as path from "path";
+import { Addressable } from "ethers";
 
-const relativePath = "../artifacts/contracts/Lock.sol/";
-const fileName = "Lock.json";
+const exportAddress = async (
+  contractName: string,
+  address: string | Addressable
+) => {
+  try {
+    const relativePath = `../artifacts/contracts/${contractName}.sol/`;
+    const fileName = `${contractName}.json`;
+    const filePath = path.join(__dirname, relativePath, fileName);
+    const rawData = fs.readFileSync(filePath, "utf8");
+    const jsonData = JSON.parse(rawData);
+
+    jsonData.contractAddress = address;
+
+    const updatedData = JSON.stringify(jsonData, null, 2);
+
+    fs.writeFileSync(filePath, updatedData, "utf8");
+
+    console.log(`Added contract address ${address} to ${fileName}`);
+  } catch (err) {
+    console.error("Error occurred while adding contractAddress:", err);
+  }
+};
 
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
@@ -22,22 +43,8 @@ async function main() {
       lockedAmount
     )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
   );
-  const filePath = path.join(__dirname, relativePath, fileName);
 
-  try {
-    const rawData = fs.readFileSync(filePath, "utf8");
-    const jsonData = JSON.parse(rawData);
-
-    jsonData.contractAddress = lock.target;
-
-    const updatedData = JSON.stringify(jsonData, null, 2);
-
-    fs.writeFileSync(filePath, updatedData, "utf8");
-
-    console.log(`Added contract address ${lock.target} to ${fileName}`);
-  } catch (err) {
-    console.error("Error occurred while adding contractAddress:", err);
-  }
+  await exportAddress("Lock", lock.target);
 }
 
 main().catch((error) => {
