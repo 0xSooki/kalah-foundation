@@ -2,6 +2,10 @@
 pragma solidity ^0.8.0;
 
 abstract contract IKalaha {
+
+    event NewGame(uint256 _game, address _by);
+    event Join(uint256 _game, address _by);
+
     struct Game {
         address[2] players;
         uint8[14] board;
@@ -20,4 +24,6 @@ abstract contract IKalaha {
             address winner
         );
     function newGame() external virtual;
+    function join(uint256 _game) external virtual;
+    function move(uint256 _game, uint8 x) external virtual;
 }
