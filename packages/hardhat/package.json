@@ -30,6 +30,8 @@
   "scripts": {
     "deploy": "npx hardhat run scripts/deploy.ts",
     "export": "cd ../nextjs && yarn clean && cp -r ../hardhat/artifacts/contracts ./src/artifacts",
-    "hnode": "npx hardhat node"
+    "hnode": "npx hardhat node",
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile"
   }
 }
