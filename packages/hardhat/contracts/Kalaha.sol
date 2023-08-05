@@ -67,17 +67,21 @@ contract Kalaha is IKalaha {
         for (uint i = 1; i < t + 1; i++) {
             board[(x + tmp + i) % 14]++;
         }
-        if ((x + t + tmp) % 14 != 6 + tmp) nonce++;
+        bool b = true;
+        for (uint i = tmp; i < 6 + tmp; i++) {
+            b = b && board[i] == 0;
+        }
+        if ((x + t + tmp) % 14 != 6 + tmp || b) nonce++;
         games[_game].board = board;
         games[_game].nonce = nonce;
-        // emit Move(nonce, x);
-        // bool b = true;
-        // for (uint i = 7 - tmp; i < 14 - tmp; i++) {
-        //     b = b && board[i] == 0;
-        // }
-        // if (games[_game].nonce % 2 == 1 && b) {
-        //     emit Win(_game, games[_game].players[nonce % 2], msg.sender);
-        //     games[_game].winner = games[_game].players[nonce % 2];
-        // }
+        emit Move(_game, x);
+        b = true;
+        for (uint i = 7 - tmp; i < 14 - tmp; i++) {
+            b = b && board[i] == 0;
+        }
+        if (games[_game].nonce % 2 == 1 && b) {
+            emit Win(_game, games[_game].players[nonce % 2], msg.sender);
+            games[_game].winner = games[_game].players[nonce % 2];
+        }
     }
 }
