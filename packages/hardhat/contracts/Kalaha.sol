@@ -5,10 +5,10 @@ import "./IKalaha.sol";
 
 contract Kalaha is IKalaha {
     modifier myTurn(uint256 _game) {
-        require(
-            games[_game].players[games[_game].nonce % 2] == msg.sender,
-            "Not your turn"
-        );
+        address current = games[_game].nonce % 2 == 0
+            ? games[_game].players[0]
+            : games[_game].players[1];
+        require(msg.sender == current, "Not your turn");
         _;
     }
 
@@ -47,52 +47,38 @@ contract Kalaha is IKalaha {
         emit Join(_game, msg.sender);
     }
 
-    function move(uint256 _game, uint8 x) external virtual override {
-        //modifier
+    function move(
+        uint256 _game,
+        uint8 x
+    ) external virtual override myTurn(_game) {
         uint8[14] memory board = games[_game].board;
         uint8 nonce = games[_game].nonce;
-        if (nonce % 2 == 0) {
-            uint8 t = board[6 - x];
-            board[6 - x] = 0;
-            for (uint i = 1; i < t + 1; i++) {
-                board[(6 - x + i) % 14]++;
-            }
-            if ((6 - x + t) % 14 == 5) {
-                nonce += 2;
-            } else {
-                nonce++;
-            }
-            games[_game].board = board;
-            games[_game].nonce = nonce;
-            emit Move(nonce, x);
-            bool b = true;
-            for (uint i = 7; i < 14; i++) {
-                b = b && board[i] == 0;
-            }
-            if (games[_game].nonce % 2 == 1 && b) {
-                emit Win(_game, games[_game].players[1], msg.sender);
-            }
+        uint8 tmp;
+        if (nonce % 2 == 1) {
+            tmp = 7;
         } else {
-            uint8 t = board[14 - x];
-            board[14 - x] = 0;
-            for (uint i = 1; i < t + 1; i++) {
-                board[(i - x) % 14]++;
-            }
-            if ((t - x) % 14 == 13) {
-                games[_game].nonce += 2;
-            } else {
-                games[_game].nonce++;
-            }
-            games[_game].board = board;
-            games[_game].nonce = nonce;
-            emit Move(nonce, x);
-            bool b = true;
-            for (uint i = 0; i < 6; i++) {
-                b = b && board[i] == 0;
-            }
-            if (games[_game].nonce % 2 == 0 && b) {
-                emit Win(_game, games[_game].players[0], msg.sender);
-            }
+            tmp = 0;
         }
+        uint8 t = board[x + tmp];
+        board[x + tmp] = 0;
+        for (uint i = 1; i < t + 1; i++) {
+            board[(x + tmp + i) % 14]++;
+        }
+        if ((x + t + tmp) % 14 == 6 + tmp) {
+            nonce += 2;
+        } else {
+            nonce++;
+        }
+        games[_game].board = board;
+        games[_game].nonce = nonce;
+        // emit Move(nonce, x);
+        // bool b = true;
+        // for (uint i = 7 - tmp; i < 14 - tmp; i++) {
+        //     b = b && board[i] == 0;
+        // }
+        // if (games[_game].nonce % 2 == 1 && b) {
+        //     emit Win(_game, games[_game].players[nonce % 2], msg.sender);
+        //     games[_game].winner = games[_game].players[nonce % 2];
+        // }
     }
 }
