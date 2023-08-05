@@ -3,13 +3,16 @@ import { ConnectButton } from './ConnectButton'
 import ThemeSwitcher from './ThemeSwitcher'
 import { MENU_LIST } from '@/lib/consts'
 import Logo from '../shared/Logo'
+import Image from 'next/image'
+import logo from 'public/images/logo.png'
 
 const Header = (): JSX.Element => {
 	return (
 		<>
 			<div className="navbar min-h-0 dark:bg-dark bg-light">
 				<div className="flex-1">
-					<Link className="normal-case font-bold font-signika mr-8 text-primary text-3xl" href="/">
+					<Image src={logo} alt="logo" width={50} height={50} />
+					<Link className="normal-case font-bold ml-2 font-signika mr-8 text-primary text-3xl" href="/">
 						<Logo />
 					</Link>
 					<ul className="flex items-center flex-row gap-6">
