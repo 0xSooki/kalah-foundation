@@ -54,21 +54,13 @@ contract Kalaha is IKalaha {
         uint8[14] memory board = games[_game].board;
         uint8 nonce = games[_game].nonce;
         uint8 tmp;
-        if (nonce % 2 == 1) {
-            tmp = 7;
-        } else {
-            tmp = 0;
-        }
+        if (nonce % 2 == 1) tmp = 7;
         uint8 t = board[x + tmp];
         board[x + tmp] = 0;
         for (uint i = 1; i < t + 1; i++) {
             board[(x + tmp + i) % 14]++;
         }
-        if ((x + t + tmp) % 14 == 6 + tmp) {
-            nonce += 2;
-        } else {
-            nonce++;
-        }
+        if ((x + t + tmp) % 14 != 6 + tmp) nonce++;
         games[_game].board = board;
         games[_game].nonce = nonce;
         // emit Move(nonce, x);
