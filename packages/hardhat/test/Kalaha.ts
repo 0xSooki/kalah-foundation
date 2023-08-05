@@ -7,9 +7,9 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Kalaha } from "../typechain-types";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { board0x0, board0x00, board0x25 } from "./BoardStates";
+import { board0x0, board0x00, board0x25, board0x025} from "./BoardStates";
 
-async function deployKakahFixture() {
+async function deployKalahFixture() {
   const [player1, player2] = await ethers.getSigners();
 
   const Kalah = await ethers.getContractFactory("Kalaha");
@@ -22,7 +22,7 @@ describe("Kalaha", function () {
   let kalah: Kalaha, player1: HardhatEthersSigner, player2: HardhatEthersSigner;
 
   beforeEach(async function () {
-    ({ kalah, player1, player2 } = await deployKakahFixture());
+    ({ kalah, player1, player2 } = await deployKalahFixture());
   });
 
   it("should allow player 1 to make a valid move", async function () {
@@ -56,7 +56,7 @@ describe("Kalaha", function () {
     expect(newBoard.board).to.be.deep.equal(board0x00);
   });
 
-  it("check double move", async function () {
+  it("check double move for player1", async function () {
     const gameID = 1;
 
     await kalah.connect(player1).newGame();
@@ -68,6 +68,20 @@ describe("Kalaha", function () {
 
     const state = await kalah.state(gameID);
     expect(state.board).to.be.deep.equal(board0x25);
+  });
+
+  it("check double move for player2", async function () {
+    const gameID = 1;
+
+    await kalah.connect(player1).newGame();
+    await kalah.connect(player2).join(gameID);
+
+    await kalah.connect(player1).move(gameID, 0);
+    await kalah.connect(player2).move(gameID, 2);
+    await kalah.connect(player2).move(gameID, 5);
+
+    const state = await kalah.state(gameID);
+    expect(state.board).to.be.deep.equal(board0x025);
   });
 
   it("check double move revert", async function () {
@@ -82,6 +96,21 @@ describe("Kalaha", function () {
     // Try to make another move for player 2 immediately, which should fail
     await expect(kalah.connect(player2).move(gameID, 0)).to.be.revertedWith(
       "Not your turn"
+    );
+  });
+
+  it("check invalid move revert", async function () {
+    const gameID = 1;
+
+    await kalah.connect(player1).newGame();
+    await kalah.connect(player2).join(gameID);
+
+    await kalah.connect(player1).move(gameID, 3);
+    await kalah.connect(player2).move(gameID, 0)
+
+    // Try to make another move for player1 from x = 3, which should fail
+    await expect(kalah.connect(player1).move(gameID, 3)).to.be.revertedWith(
+      "Invalid move, empty house"
     );
   });
 });
