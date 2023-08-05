@@ -11,6 +11,13 @@ contract Kalaha is IKalaha {
         require(msg.sender == current, "Not your turn");
         _;
     }
+    modifier validMove(uint256 _game, uint8 x) {
+        require(x >= 0 && x < 6, "Invalid move, x out of range");
+        uint8 tmp;
+        if (games[_game].nonce % 2 == 1) tmp = 7;
+        require(games[_game].board[x + tmp] != 0, "Invalid move, empty house");
+        _;
+    }
 
     function state(
         uint256 _game
@@ -50,7 +57,7 @@ contract Kalaha is IKalaha {
     function move(
         uint256 _game,
         uint8 x
-    ) external virtual override myTurn(_game) {
+    ) external virtual override myTurn(_game) validMove(_game, x) {
         uint8[14] memory board = games[_game].board;
         uint8 nonce = games[_game].nonce;
         uint8 tmp;
