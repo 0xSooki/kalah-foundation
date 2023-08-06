@@ -11,13 +11,6 @@ contract Kalaha is IKalaha {
         require(msg.sender == current, "Not your turn");
         _;
     }
-    modifier validMove(uint256 _game, uint8 x) {
-        require(x >= 0 && x < 6, "Invalid move, x out of range");
-        uint8 tmp;
-        if (games[_game].nonce % 2 == 1) tmp = 7;
-        require(games[_game].board[x + tmp] != 0, "Invalid move, empty house");
-        _;
-    }
 
     function state(
         uint256 _game
@@ -57,28 +50,31 @@ contract Kalaha is IKalaha {
     function move(
         uint256 _game,
         uint8 x
-    ) external virtual override myTurn(_game) validMove(_game, x) {
-        uint8[14] memory board = games[_game].board;
-        uint8 nonce = games[_game].nonce;
+    ) external virtual override myTurn(_game) {
+        require(x >= 0 && x < 6, "Invalid move, x out of range");
         uint8 tmp;
+        uint8 nonce = games[_game].nonce;
         if (nonce % 2 == 1) tmp = 7;
+        require(games[_game].board[x + tmp] != 0, "Invalid move, empty house");
+
+        uint8[14] memory board = games[_game].board;
         uint8 t = board[x + tmp];
         board[x + tmp] = 0;
+
         for (uint i = 1; i < t + 1; i++) {
             board[(x + tmp + i) % 14]++;
         }
+
         bool b = true;
         for (uint i = tmp; i < 6 + tmp; i++) {
             b = b && board[i] == 0;
         }
+
         if ((x + t + tmp) % 14 != 6 + tmp || b) nonce++;
         games[_game].board = board;
         games[_game].nonce = nonce;
         emit Move(_game, x);
-        b = true;
-        for (uint i = 7 - tmp; i < 14 - tmp; i++) {
-            b = b && board[i] == 0;
-        }
+
         if (games[_game].nonce % 2 == 1 && b) {
             emit Win(_game, games[_game].players[nonce % 2], msg.sender);
             games[_game].winner = games[_game].players[nonce % 2];
