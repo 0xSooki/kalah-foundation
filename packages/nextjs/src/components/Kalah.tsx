@@ -30,7 +30,6 @@ const Kalah = () => {
 
 	const provider = new ethers.JsonRpcProvider()
 	const contract = new ethers.Contract(KalahaData.contractAddress, KalahaData.abi, provider)
-
 	const getState = async () => {
 		const state = (await contract.state(1)) as State
 		setState(state)
