@@ -1,6 +1,7 @@
 import React from 'react'
 
 const Board = ({ players, board, nonce, winner }) => {
+	
 	return (
 		<div className="flex items-center space-y-4 dark:bg-light bg-dark lg:p-8 p-4 rounded-lg">
 			<div className="flex flex-col space-y-4">
