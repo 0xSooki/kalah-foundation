@@ -51,6 +51,7 @@ contract Kalaha is IKalaha {
         uint256 _game,
         uint8 x
     ) external virtual override myTurn(_game) {
+        require(games[_game].winner == address(0), "Game over");
         require(x >= 0 && x < 6, "Invalid move, x out of range");
         uint8 tmp;
         uint8 nonce = games[_game].nonce;
@@ -66,7 +67,7 @@ contract Kalaha is IKalaha {
         }
 
         bool b = true;
-        for (uint i = tmp; i < 6 + tmp; i++) {
+        for (uint i = 7 - tmp; i < 13 - tmp; i++) {
             b = b && board[i] == 0;
         }
 
@@ -75,7 +76,7 @@ contract Kalaha is IKalaha {
         games[_game].nonce = nonce;
         emit Move(_game, x);
 
-        if (games[_game].nonce % 2 == 1 && b) {
+        if (b) {
             emit Win(_game, games[_game].players[nonce % 2], msg.sender);
             games[_game].winner = games[_game].players[nonce % 2];
         }

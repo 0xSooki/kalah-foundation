@@ -7,7 +7,8 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Kalaha } from "../typechain-types";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { board0x0, board0x00, board0x25, board0x025} from "./BoardStates";
+import { board0x0, board0x00, board0x25, board0x025 } from "./BoardStates";
+import { printBoard } from "../utils/printBoard";
 
 async function deployKalahFixture() {
   const [player1, player2] = await ethers.getSigners();
@@ -106,11 +107,64 @@ describe("Kalaha", function () {
     await kalah.connect(player2).join(gameID);
 
     await kalah.connect(player1).move(gameID, 3);
-    await kalah.connect(player2).move(gameID, 0)
+    await kalah.connect(player2).move(gameID, 0);
 
     // Try to make another move for player1 from x = 3, which should fail
     await expect(kalah.connect(player1).move(gameID, 3)).to.be.revertedWith(
       "Invalid move, empty house"
     );
+  });
+
+  it("should emit Win event when player 1 wins", async function () {
+    const gameID = 1;
+
+    await kalah.connect(player1).newGame();
+    await kalah.connect(player2).join(gameID);
+
+    await kalah.connect(player1).move(gameID, 0);
+    await kalah.connect(player2).move(gameID, 0);
+    await kalah.connect(player1).move(gameID, 1);
+    await kalah.connect(player1).move(gameID, 2);
+    await kalah.connect(player2).move(gameID, 0);
+    await kalah.connect(player1).move(gameID, 3);
+    await kalah.connect(player2).move(gameID, 0);
+    await kalah.connect(player1).move(gameID, 4);
+    await kalah.connect(player2).move(gameID, 0);
+    await kalah.connect(player1).move(gameID, 5);
+    await kalah.connect(player2).move(gameID, 0);
+
+    const state = await kalah.state(gameID);
+    expect(state.winner).to.equal(player1.address);
+  });
+
+  it("should emit Win event when player 2 wins", async function () {
+    const gameID = 1;
+
+    await kalah.connect(player1).newGame();
+    await kalah.connect(player2).join(gameID);
+    await kalah.connect(player1).move(gameID, 3);
+    await kalah.connect(player2).move(gameID, 2);
+    await kalah.connect(player2).move(gameID, 0);
+    await kalah.connect(player1).move(gameID, 2);
+    await kalah.connect(player1).move(gameID, 3);
+    await kalah.connect(player2).move(gameID, 1);
+    await kalah.connect(player2).move(gameID, 2);
+    await kalah.connect(player1).move(gameID, 0);
+    await kalah.connect(player2).move(gameID, 5);
+    await kalah.connect(player1).move(gameID, 2);
+    await kalah.connect(player2).move(gameID, 4);
+    await kalah.connect(player1).move(gameID, 0);
+    await kalah.connect(player2).move(gameID, 5);
+    await kalah.connect(player2).move(gameID, 3);
+    await kalah.connect(player1).move(gameID, 0);
+    await kalah.connect(player2).move(gameID, 4);
+    await kalah.connect(player1).move(gameID, 2);
+    await kalah.connect(player2).move(gameID, 5);
+    await kalah.connect(player1).move(gameID, 0);
+
+    printBoard((await kalah.state(gameID)).board);
+
+    const state = await kalah.state(gameID);
+    expect(state.winner).to.equal(player2.address);
   });
 });
