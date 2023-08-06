@@ -38,7 +38,7 @@ contract Kalaha is IKalaha {
         gameID++;
         games[gameID].players[0] = msg.sender;
         games[gameID].board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-        games[gameID].nonce = 0;
+        emit NewGame(gameID, msg.sender);
     }
 
     function join(uint256 _game) external virtual override {
