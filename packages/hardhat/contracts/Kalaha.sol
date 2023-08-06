@@ -51,34 +51,36 @@ contract Kalaha is IKalaha {
         uint256 _game,
         uint8 x
     ) external virtual override myTurn(_game) {
-        require(games[_game].winner == address(0), "Game over");
-        require(x >= 0 && x < 6, "Invalid move, x out of range");
-        uint8 tmp;
-        uint8 nonce = games[_game].nonce;
-        if (nonce % 2 == 1) tmp = 7;
-        require(games[_game].board[x + tmp] != 0, "Invalid move, empty house");
+        Game storage game = games[_game];
+        require(game.winner == address(0), "Game over");
+        require(x < 6, "Invalid move, x out of range");
 
-        uint8[14] memory board = games[_game].board;
-        uint8 t = board[x + tmp];
-        board[x + tmp] = 0;
+        uint8 tmp = game.nonce % 2 == 1 ? 7 : 0;
+        uint8 houseValue = game.board[x + tmp];
+        require(houseValue != 0, "Invalid move, empty house");
 
-        for (uint i = 1; i < t + 1; i++) {
-            board[(x + tmp + i) % 14]++;
+        game.board[x + tmp] = 0;
+
+        for (uint8 i = 1; i <= houseValue; i++) {
+            uint8 index = (x + tmp + i) % 14;
+            game.board[index]++;
         }
 
         bool b = true;
-        for (uint i = 7 - tmp; i < 13 - tmp; i++) {
-            b = b && board[i] == 0;
+        for (uint8 i = 7 - tmp; i < 13 - tmp; i++) {
+            b = b && game.board[i] == 0;
         }
 
-        if ((x + t + tmp) % 14 != 6 + tmp || b) nonce++;
-        games[_game].board = board;
-        games[_game].nonce = nonce;
+        if ((x + houseValue + tmp) % 14 != 6 + tmp || b) {
+            game.nonce++;
+        }
+
         emit Move(_game, x);
 
         if (b) {
-            emit Win(_game, games[_game].players[nonce % 2], msg.sender);
-            games[_game].winner = games[_game].players[nonce % 2];
+            address winner = game.players[game.nonce % 2];
+            game.winner = winner;
+            emit Win(_game, winner, msg.sender);
         }
     }
 }
