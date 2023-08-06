@@ -66,5 +66,4 @@ const board0x025: bigint[] = [
   2n,
 ];
 
-
 export { board0x0, board0x00, board0x25, board0x025 };

@@ -20,6 +20,9 @@ module.exports = {
 		],
 	},
 	theme: {
+		fontFamily: {
+			rubik: ['Rubik Mono One', 'sans-serif'],
+		},
 		extend: {
 			colors: {
 				brand: '#FF822C',
