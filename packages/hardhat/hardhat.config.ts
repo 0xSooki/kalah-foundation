@@ -11,9 +11,13 @@ const config: HardhatUserConfig = {
       optimizer: { enabled: true, runs: 1000 },
     },
   },
-  defaultNetwork: "localhost",
+
+  defaultNetwork: "hardhat",
 
   networks: {
+    hardhat: {
+      chainId: 1337,
+    },
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
       accounts: [process.env.SEPOLIA_PRIVATE_KEY as string],
