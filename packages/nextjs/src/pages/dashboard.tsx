@@ -8,7 +8,7 @@ const Home: FC = () => {
 			<div className=" bg-light dark:bg-dark w-full sm:items-center py-4 sm:pt-0">
 				<Header />
 				<div className="flex flex-col items-center justify-center min-h-screen py-2">
-					<Kalah slug="1" />
+					<h1>Dashboard coming soon</h1>
 				</div>
 			</div>
 		</>

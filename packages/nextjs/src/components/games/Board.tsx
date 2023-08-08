@@ -1,7 +1,7 @@
 import React from 'react'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi'
 
-export const Board = ({ gameID, players, board, nonce, winner }) => {
+const Board = ({ gameID, board }) => {
 	return (
 		<div className="flex items-center space-y-4 dark:bg-light bg-dark lg:p-8 p-4 rounded-lg">
 			<div className="flex flex-col space-y-4">
@@ -83,7 +83,8 @@ function renderPockets(tmp, board, gameID) {
 	}
 	return pockets
 }
-export const Join = gameID => {
+
+const Join = gameID => {
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -119,3 +120,5 @@ export const Join = gameID => {
 		</button>
 	)
 }
+
+export default Board
