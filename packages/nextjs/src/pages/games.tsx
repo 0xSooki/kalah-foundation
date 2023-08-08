@@ -1,9 +1,17 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client'
+import { GRAPH_API_URL } from '@/lib/consts'
+
+const client = new ApolloClient({
+	uri: GRAPH_API_URL,
+	cache: new InMemoryCache(),
+})
 
 const Games = () => {
+	const [games, setGames] = useState([])
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -17,6 +25,24 @@ const Games = () => {
 		],
 		functionName: 'newGame',
 	})
+
+	useEffect(() => {
+		client
+			.query({
+				query: gql`
+					query GetGamesWithNullPlayer2 {
+						games(first: 5, where: { player2: "0x0000000000000000000000000000000000000000" }) {
+							id
+							gameID
+							player1
+							player2
+						}
+					}
+				`,
+			})
+			.then(result => setGames(result.data.games))
+		console.log(games)
+	}, [])
 
 	const { data, write } = useContractWrite(config)
 	return (
@@ -38,7 +64,9 @@ const Games = () => {
 								New Game
 							</button>
 						</div>
-						<GameCard gameID={1} />
+						{games.map(game => (
+							<GameCard key={game.id} gameID={game.gameID} />
+						))}
 					</div>
 				</div>
 			</div>
