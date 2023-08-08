@@ -59,7 +59,7 @@ const Games = () => {
 									await refetch()
 									write?.()
 								}}
-								className="btn ml-8 btn-secondary"
+								className="btn ml-8 btn-primary dark:btn-secondary"
 							>
 								New Game
 							</button>

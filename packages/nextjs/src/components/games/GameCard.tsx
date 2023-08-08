@@ -30,12 +30,20 @@ const GameCard: FC<IGameCard> = ({ gameID }) => {
 
 	const { data, write } = useContractWrite(config)
 	return (
-		<div className="card w-96 text-dark bg-light shadow-xl">
+		<div className="card w-96 dark:text-dark text-light dark:bg-light bg-dark shadow-xl">
 			<div className="card-body">
 				<h2 className="card-title">Game {gameID}</h2>
 				<p>data...</p>
 				<div className="card-actions justify-end">
-					<button className="btn btn-primary">Join</button>
+					<button
+						onClick={async () => {
+							await refetch()
+							write?.()
+						}}
+						className="btn btn-secondary dark:btn-primary"
+					>
+						Join
+					</button>
 				</div>
 			</div>
 		</div>
