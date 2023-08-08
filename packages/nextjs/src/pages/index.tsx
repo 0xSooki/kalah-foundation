@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import Kalah from '@/components/Kalah'
+import Kalah from '@/components/games/Kalah'
 import Header from '@/components/header/Header'
 
 const Home: FC = () => {

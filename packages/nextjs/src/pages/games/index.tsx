@@ -2,16 +2,18 @@ import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
 import React, { useEffect, useState } from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client'
+import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client'
 import { GRAPH_API_URL } from '@/lib/consts'
+import Skeleton from 'react-loading-skeleton'
 
-const client = new ApolloClient({
-	uri: GRAPH_API_URL,
-	cache: new InMemoryCache(),
-})
+interface Game {
+	id: string
+	gameID: number
+	player1: string
+	player2: string
+}
 
 const Games = () => {
-	const [games, setGames] = useState([])
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -26,25 +28,20 @@ const Games = () => {
 		functionName: 'newGame',
 	})
 
-	useEffect(() => {
-		client
-			.query({
-				query: gql`
-					query GetGamesWithNullPlayer2 {
-						games(first: 5, where: { player2: "0x0000000000000000000000000000000000000000" }) {
-							id
-							gameID
-							player1
-							player2
-						}
-					}
-				`,
-			})
-			.then(result => setGames(result.data.games))
-		console.log(games)
-	}, [])
+	const GET_GAMES = gql`
+		query GetGames {
+			games(first: 5, where: { player2: "0x0000000000000000000000000000000000000000" }) {
+				id
+				gameID
+				player1
+				player2
+			}
+		}
+	`
+	const { loading, error, data } = useQuery(GET_GAMES)
 
-	const { data, write } = useContractWrite(config)
+	console.log(data)
+	const { write } = useContractWrite(config)
 	return (
 		<>
 			<Header />
@@ -64,9 +61,20 @@ const Games = () => {
 								New Game
 							</button>
 						</div>
-						{games.map(game => (
-							<GameCard key={game.id} gameID={game.gameID} />
-						))}
+						{data == undefined ? (
+							<div>
+								<Skeleton
+									highlightColor="#FFFFFF"
+									count={3}
+									width={384}
+									className="mb-12 shadow-xl rounded-3xl dark:bg-light bg-dark"
+									borderRadius={12}
+									height={180}
+								/>
+							</div>
+						) : (
+							data.games.map(game => <GameCard key={game.id} gameID={game.gameID} />)
+						)}
 					</div>
 				</div>
 			</div>

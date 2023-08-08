@@ -1,4 +1,5 @@
 import 'tailwindcss/tailwind.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 import { ThemeProvider } from 'next-themes'
 import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
@@ -14,6 +15,8 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { useTheme } from 'next-themes'
 import { ALCHEMY_ID, WALLET_CONNECT_ID } from '@/lib/consts'
+import { GRAPH_API_URL } from '@/lib/consts'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
 const { chains, publicClient } = configureChains(
 	[sepolia, hardhat, localhost],
@@ -29,6 +32,11 @@ const wagmiConfig = createConfig({
 	autoConnect: true,
 	connectors,
 	publicClient,
+})
+
+const client = new ApolloClient({
+	uri: GRAPH_API_URL,
+	cache: new InMemoryCache(),
 })
 
 const App = ({
@@ -49,7 +57,9 @@ const App = ({
 							modalSize="compact"
 							chains={chains}
 						>
-							<Component {...pageProps} />
+							<ApolloProvider client={client}>
+								<Component {...pageProps} />
+							</ApolloProvider>
 						</RainbowKitProvider>
 					</RainbowKitSiweNextAuthProvider>
 				</SessionProvider>
