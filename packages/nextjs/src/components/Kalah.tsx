@@ -25,10 +25,15 @@ interface State {
 	nonce: bigint
 	winner: string
 }
-const Kalah = () => {
+
+interface Props {
+	slug: string
+}
+
+const Kalah: FC<Props> = ({ slug }) => {
+	const gameID = BigInt(slug)
 	const [state, setState] = useState<State>()
 	const [win, setWin] = useState(false)
-	const gameID: BigInt = 1n
 
 	useContractRead({
 		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
@@ -56,7 +61,7 @@ const Kalah = () => {
 	} else {
 		return (
 			<>
-				<Board gameID={gameID} players={state[0]} board={state[1]} nonce={state[2]} winner={state[3]} />
+				<Board gameID={gameID} board={state[1]} />
 			</>
 		)
 	}
