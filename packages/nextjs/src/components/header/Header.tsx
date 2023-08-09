@@ -6,10 +6,10 @@ import Logo from '../shared/Logo'
 import Image from 'next/image'
 import logo from 'public/images/logo.png'
 
-const Header = (): JSX.Element => {
+const Header = () => {
 	return (
 		<>
-			<div className="navbar min-h-0 dark:bg-dark bg-light">
+			<div className="navbar absolute top-0 z-10 min-h-0 dark:bg-dark bg-light">
 				<div className="flex-1">
 					<Image src={logo} alt="logo" width={50} height={50} />
 					<Link className="normal-case font-bold ml-2 font-signika mr-8 text-primary text-3xl" href="/">

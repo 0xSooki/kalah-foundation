@@ -17,6 +17,7 @@ import { useTheme } from 'next-themes'
 import { ALCHEMY_ID, WALLET_CONNECT_ID } from '@/lib/consts'
 import { GRAPH_API_URL } from '@/lib/consts'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import Header from '@/components/header/Header'
 
 const { chains, publicClient } = configureChains(
 	[sepolia, hardhat, localhost],
@@ -58,7 +59,12 @@ const App = ({
 							chains={chains}
 						>
 							<ApolloProvider client={client}>
-								<Component {...pageProps} />
+								<div className="flex flex-col min-h-screen">
+									<Header />
+									<main className="relative flex flex-col flex-1">
+										<Component {...pageProps} />
+									</main>
+								</div>
 							</ApolloProvider>
 						</RainbowKitProvider>
 					</RainbowKitSiweNextAuthProvider>

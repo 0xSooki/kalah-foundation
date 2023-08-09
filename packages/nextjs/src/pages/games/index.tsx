@@ -44,38 +44,35 @@ const Games = () => {
 	const { write } = useContractWrite(config)
 	return (
 		<>
-			<Header />
-			<div className="relative min-h-screen flex bg-light dark:bg-dark flex-col  justify-between">
-				<div className="mb-auto">
-					<div className="mt-16 flex w-full flex-col gap-12 items-center justify-center">
-						<div className="flex">
-							<h1 className="font-bold text-4xl text-dark dark:text-light">Active Games</h1>
+			<div className="min-h-screen flex bg-light dark:bg-dark flex-col justify-between">
+				<div className="mt-24 flex flex-col gap-12 items-center justify-center">
+					<div className="flex">
+						<h1 className="font-bold text-4xl text-dark dark:text-light">Active Games</h1>
 
-							<button
-								onClick={async () => {
-									await refetch()
-									write?.()
-								}}
-								className="btn ml-8 btn-primary dark:btn-secondary"
-							>
-								New Game
-							</button>
-						</div>
-						{data == undefined ? (
-							<div>
-								<Skeleton
-									highlightColor="#FFFFFF"
-									count={3}
-									width={384}
-									className="mb-12 shadow-xl rounded-3xl dark:bg-light bg-dark"
-									borderRadius={12}
-									height={180}
-								/>
-							</div>
-						) : (
-							data.games.map(game => <GameCard key={game.id} gameID={game.gameID} />)
-						)}
+						<button
+							onClick={async () => {
+								await refetch()
+								write?.()
+							}}
+							className="btn ml-8 btn-primary dark:btn-secondary"
+						>
+							New Game
+						</button>
 					</div>
+					{data == undefined ? (
+						<div>
+							<Skeleton
+								highlightColor="#FFFFFF"
+								count={3}
+								width={384}
+								className="mb-12 shadow-xl rounded-3xl dark:bg-light bg-dark"
+								borderRadius={12}
+								height={180}
+							/>
+						</div>
+					) : (
+						data.games.map(game => <GameCard key={game.id} gameID={game.gameID} />)
+					)}
 				</div>
 			</div>
 		</>
