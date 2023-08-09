@@ -4,7 +4,6 @@ import Board from './Board'
 import { useContractRead, useContractEvent } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
-import { ALCHEMY_ID } from '@/lib/consts'
 
 interface State {
 	players: [string, string]
@@ -36,15 +35,15 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const gameID = BigInt(slug)
 	const [state, setState] = useState<State>()
 	const [win, setWin] = useState(false)
+	const provider = new ethers.InfuraProvider('sepolia', process.env.NEXT_PUBLIC_INFURA_API_KEY)
+	const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
 
 	const getData = async () => {
-		const provider = new ethers.InfuraProvider('sepolia', process.env.NEXT_PUBLIC_INFURA_API_KEY)
-		const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
-		let data = await contract.state(gameID)
+		const data = await contract.state(gameID)
 		setState(data as State)
 	}
 
-	useContractRead({
+	const { isLoading } = useContractRead({
 		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
 		abi: KalahaData.abi,
 		functionName: 'state',
@@ -58,7 +57,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
 		abi: KalahaData.abi,
 		eventName: 'Move',
-		listener(log) {
+		listener() {
 			getData()
 		},
 	})
@@ -67,7 +66,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
 		abi: KalahaData.abi,
 		eventName: 'Win',
-		listener(log) {
+		listener() {
 			setWin(true)
 		},
 	})
@@ -79,7 +78,12 @@ const Kalah: FC<Props> = ({ slug }) => {
 	} else {
 		return (
 			<>
-				<Board gameID={gameID} board={state[1]} players={state[0]} />
+				<div>
+					<div className="dark:text-light text-dark text-2xl">
+						{Number(state.nonce) % 2 == 0 ? 'Your turn' : "Opponent's turn"}
+					</div>
+					<Board gameID={gameID} board={state[1]} players={state[0]} />
+				</div>
 			</>
 		)
 	}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useAccount } from 'wagmi'
 
 const Board = ({ gameID, board, players }) => {
 	const { address } = useAccount()
