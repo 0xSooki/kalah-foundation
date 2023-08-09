@@ -75,8 +75,16 @@ contract Kalaha is IKalaha {
         }
 
         bool b = true;
+        bool c = true;
         for (uint8 i = 7 - tmp; i < 13 - tmp; i++) {
-            b = b && game.board[i] == 0;
+            b =
+                b &&
+                (
+                    (game.nonce % 2) == 0
+                        ? game.board[i - 7] == 0
+                        : game.board[i + 7] == 0
+                );
+            c = c && game.board[i] == 0;
         }
 
         if ((x + houseValue + tmp) % 14 != 6 + tmp || b) {
@@ -85,7 +93,7 @@ contract Kalaha is IKalaha {
 
         emit Move(_game, x);
 
-        if (b) {
+        if (c) {
             address winner = game.players[game.nonce % 2];
             game.winner = winner;
             emit Win(_game, winner, msg.sender);
