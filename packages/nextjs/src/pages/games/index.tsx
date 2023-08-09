@@ -1,9 +1,8 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
-import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client'
-import { GRAPH_API_URL } from '@/lib/consts'
+import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
 
 interface Game {
@@ -40,7 +39,6 @@ const Games = () => {
 	`
 	const { loading, error, data } = useQuery(GET_GAMES)
 
-	console.log(data)
 	const { write } = useContractWrite(config)
 	return (
 		<>

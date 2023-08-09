@@ -3,6 +3,7 @@ import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
 import { useContractRead, useContractEvent } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
+import { ethers } from 'ethers'
 
 interface State {
 	players: [string, string]
@@ -35,6 +36,13 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [state, setState] = useState<State>()
 	const [win, setWin] = useState(false)
 
+	const getData = async () => {
+		const provider = new ethers.InfuraProvider('sepolia', '88339aec240d4247884cf895594bbd8f')
+		const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
+		let data = await contract.state(gameID)
+		setState(data as State)
+	}
+
 	useContractRead({
 		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
 		abi: KalahaData.abi,
@@ -42,6 +50,15 @@ const Kalah: FC<Props> = ({ slug }) => {
 		args: [gameID],
 		onSuccess(data) {
 			setState(data as State)
+		},
+	})
+
+	useContractEvent({
+		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		abi: KalahaData.abi,
+		eventName: 'Move',
+		listener(log) {
+			getData()
 		},
 	})
 
@@ -61,7 +78,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	} else {
 		return (
 			<>
-				<Board gameID={gameID} board={state[1]} players={state[0]}/>
+				<Board gameID={gameID} board={state[1]} players={state[0]} />
 			</>
 		)
 	}
