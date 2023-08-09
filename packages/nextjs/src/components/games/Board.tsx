@@ -2,19 +2,20 @@ import React from 'react'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount } from 'wagmi'
 
 const Board = ({ gameID, board, players }) => {
-	const { address } = useAccount();
-	const p1 = address != players[1];
-	const tmp = p1 ? 0 : 7;
+	const { address } = useAccount()
+	const p1 = address != players[1]
+	const tmp = p1 ? 0 : 7
+	const viewer = !(address == players[1] || address == players[0])
 	return (
 		<div className="flex items-center space-y-4 dark:bg-light bg-dark lg:p-8 p-4 rounded-lg">
 			<div className="flex flex-col space-y-4">
 				<div className="flex font-rubik text-xl dark:text-light text-dark space-x-4">
-					<UnifiedPocket value={board[13-tmp]} />
+					<UnifiedPocket value={board[13 - tmp]} />
 					<div className="flex flex-col space-y-4">
-						<div className="flex space-x-4">{renderPockets(p1, 7-tmp, board, gameID).reverse()}</div>
-						<div className="flex space-x-4">{renderPockets(p1, tmp, board, gameID)}</div>
+						<div className="flex space-x-4">{renderPockets(viewer, p1, 7 - tmp, board, gameID).reverse()}</div>
+						<div className="flex space-x-4">{renderPockets(viewer, p1, tmp, board, gameID)}</div>
 					</div>
-					<UnifiedPocket value={board[6+tmp]} />
+					<UnifiedPocket value={board[6 + tmp]} />
 				</div>
 			</div>
 		</div>
@@ -28,7 +29,7 @@ const UnifiedPocket = value => {
 		</div>
 	)
 }
-export const HandleMove = ({ disable, gameID, value, id }) => {
+export const HandleMove = ({ viewer, disable, gameID, value, id }) => {
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -58,7 +59,8 @@ export const HandleMove = ({ disable, gameID, value, id }) => {
 
 	const { data, write } = useContractWrite(config)
 	return (
-		<button disabled={disable}
+		<button
+			disabled={disable || viewer || value == 0}
 			onClick={async () => {
 				await refetch()
 				write?.()
@@ -70,11 +72,12 @@ export const HandleMove = ({ disable, gameID, value, id }) => {
 	)
 }
 
-function renderPockets(p1, tmp, board, gameID) {
+function renderPockets(viewer, p1, tmp, board, gameID) {
 	const pockets = []
 	for (let i = 0; i <= 5; i++) {
 		let prop = {
-			disable: p1 && tmp == 7 || !p1 && tmp == 0,
+			viewer: viewer,
+			disable: (p1 && tmp == 7) || (!p1 && tmp == 0),
 			gameID: gameID,
 			value: Number(board[tmp + i]),
 			id: Number(i),
