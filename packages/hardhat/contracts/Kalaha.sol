@@ -11,6 +11,15 @@ contract Kalaha is IKalaha {
         require(msg.sender == current, "Not your turn");
         _;
     }
+    modifier joinable(uint256 _game) {
+        require(
+            games[_game].players[0] != address(0) &&
+                games[_game].players[0] != msg.sender &&
+                games[_game].players[1] == address(0),
+            "Invalid gameID"
+        );
+        _;
+    }
 
     function state(
         uint256 _game
@@ -41,8 +50,7 @@ contract Kalaha is IKalaha {
         emit NewGame(gameID, msg.sender);
     }
 
-    function join(uint256 _game) external virtual override {
-        //modifier
+    function join(uint256 _game) external virtual override joinable(_game) {
         games[_game].players[1] = msg.sender;
         emit Join(_game, msg.sender);
     }
