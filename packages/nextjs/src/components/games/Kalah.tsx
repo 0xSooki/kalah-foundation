@@ -61,7 +61,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	} else {
 		return (
 			<>
-				<Board gameID={gameID} board={state[1]} />
+				<Board gameID={gameID} board={state[1]} players={state[0]}/>
 			</>
 		)
 	}
