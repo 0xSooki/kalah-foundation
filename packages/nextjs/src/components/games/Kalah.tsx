@@ -4,6 +4,7 @@ import Board from './Board'
 import { useContractRead, useContractEvent } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
+import { ALCHEMY_ID } from '@/lib/consts'
 
 interface State {
 	players: [string, string]
@@ -37,7 +38,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [win, setWin] = useState(false)
 
 	const getData = async () => {
-		const provider = new ethers.InfuraProvider('sepolia', '88339aec240d4247884cf895594bbd8f')
+		const provider = new ethers.InfuraProvider('sepolia', process.env.NEXT_PUBLIC_INFURA_API_KEY)
 		const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
 		let data = await contract.state(gameID)
 		setState(data as State)
