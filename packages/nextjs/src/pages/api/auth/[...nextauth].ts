@@ -4,10 +4,15 @@
 // can be used to get the session server-side with 'unstable_getServerSession'
 import { IncomingMessage } from 'http'
 import { NextApiRequest, NextApiResponse } from 'next'
-import NextAuth, { NextAuthOptions } from 'next-auth'
+import NextAuth, { NextAuthOptions, Session } from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { getCsrfToken } from 'next-auth/react'
 import { SiweMessage } from 'siwe'
+
+interface CustomSession extends Session {
+	address?: string
+}
 
 export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 	const providers = [
@@ -58,7 +63,7 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 
 	return {
 		callbacks: {
-			async session({ session, token }) {
+			async session({ session, token }: { session: CustomSession; token: JWT }) {
 				session.address = token.sub
 				session.user = {
 					name: token.sub,
