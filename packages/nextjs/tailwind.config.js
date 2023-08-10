@@ -24,6 +24,8 @@ module.exports = {
 			rubik: ['Rubik Mono One', 'sans-serif'],
 		},
 		extend: {
+			width: { 18: '72px' },
+			height: { 18: '72px' },
 			colors: {
 				brand: '#FF822C',
 				darkest: '#240C04',
