@@ -1,6 +1,6 @@
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 
-export const House = ({ viewer, disable, gameID, value, id }) => {
+export const House = ({ isViewer, disable, gameID, value, id }) => {
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -31,7 +31,7 @@ export const House = ({ viewer, disable, gameID, value, id }) => {
 	const { data, write } = useContractWrite(config)
 	return (
 		<button
-			disabled={disable || viewer || value == 0}
+			disabled={disable || isViewer || value == 0}
 			onClick={async () => {
 				await refetch()
 				write?.()
