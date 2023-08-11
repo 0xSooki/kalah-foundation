@@ -22,12 +22,15 @@ const Header = () => {
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
 						</svg>
 					</label>
-					<ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+					<ul
+						tabIndex={0}
+						className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow dark:bg-light bg-dark rounded-box w-52"
+					>
 						{MENU_LIST.map(item => {
 							return (
 								<li key={item.name}>
 									<Link
-										className="btn btn-sm btn-ghost normal-case font-bold text-lg text-dark dark:text-light"
+										className="btn btn-sm btn-ghost normal-case font-bold text-lg hover:text-dark hover:dark:text-light dark:text-dark hover:bg-light hover:dark:bg-dark text-light"
 										href={item.path}
 									>
 										{item.name}
