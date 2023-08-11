@@ -1,7 +1,14 @@
 import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
-import { useContractRead, useContractEvent, useAccount, ConnectorData } from 'wagmi'
+import {
+	useContractRead,
+	useContractEvent,
+	useAccount,
+	ConnectorData,
+	useContractWrite,
+	usePrepareContractWrite,
+} from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
 import Skeleton from 'react-loading-skeleton'
@@ -74,6 +81,39 @@ const Kalah: FC<Props> = ({ slug }) => {
 		},
 	})
 
+	useContractEvent({
+		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		abi: KalahaData.abi,
+		eventName: 'Join',
+		listener() {
+			fetchData()
+		},
+	})
+
+	const { config, refetch } = usePrepareContractWrite({
+		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
+		abi: [
+			{
+				inputs: [
+					{
+						internalType: 'uint256',
+						name: '_game',
+						type: 'uint256',
+					},
+				],
+				name: 'join',
+				outputs: [],
+				stateMutability: 'nonpayable',
+				type: 'function',
+			},
+		],
+		functionName: 'join',
+		args: [gameID],
+		enabled: false,
+	})
+
+	const { data, write } = useContractWrite(config)
+
 	useEffect(() => {
 		if (activeConnector) {
 			activeConnector.on('change', () => fetchData())
@@ -95,7 +135,9 @@ const Kalah: FC<Props> = ({ slug }) => {
 		return (
 			<>
 				<div className="dark:text-light text-dark font-bold text-2xl">
-					{isViewer
+					{state[0][1] == ethers.ZeroAddress
+						? 'waiting for opponent'
+						: isViewer
 						? win != ethers.ZeroAddress
 							? `${shortenAddress(win)} won`
 							: turn
@@ -108,7 +150,6 @@ const Kalah: FC<Props> = ({ slug }) => {
 						: state[0][Number(state[2]) % 2] == address
 						? 'Your turn'
 						: "Opponent's turn"}
-
 					<Board
 						address={address}
 						isViewer={isViewer}
@@ -117,6 +158,21 @@ const Kalah: FC<Props> = ({ slug }) => {
 						board={state[1]}
 						players={state[0]}
 					/>
+					<div className="w-full flex mt-4">
+						{state[0][1] == ethers.ZeroAddress && state[0][0] != address ? (
+							<button
+								onClick={async () => {
+									await refetch()
+									write?.()
+								}}
+								className="btn ml-auto dark:btn-secondary btn-primary"
+							>
+								JOIN GAME
+							</button>
+						) : (
+							<p></p>
+						)}
+					</div>
 				</div>
 			</>
 		)
