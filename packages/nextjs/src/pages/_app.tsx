@@ -18,6 +18,7 @@ import { ALCHEMY_ID, WALLET_CONNECT_ID } from '@/lib/consts'
 import { GRAPH_API_URL } from '@/lib/consts'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import Header from '@/components/header/Header'
+import Footer from '@/components/Footer'
 
 const { chains, publicClient } = configureChains(
 	[sepolia, hardhat, localhost],
@@ -64,6 +65,7 @@ const App = ({
 									<main className="relative flex flex-col flex-1">
 										<Component {...pageProps} />
 									</main>
+									<Footer />
 								</div>
 							</ApolloProvider>
 						</RainbowKitProvider>
