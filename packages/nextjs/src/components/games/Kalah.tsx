@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
-import { useContractRead, useContractEvent, useAccount } from 'wagmi'
+import { useContractRead, useContractEvent, useAccount, ConnectorData } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
 import Skeleton from 'react-loading-skeleton'
@@ -37,15 +37,16 @@ interface Props {
 const Kalah: FC<Props> = ({ slug }) => {
 	const gameID = BigInt(slug)
 	const [state, setState] = useState<State>()
-	const [win, setWin] = useState(false)
+	const [win, setWin] = useState(ethers.ZeroAddress)
 	const [isViewer, setIsViewer] = useState(false)
 	const [turn, setTurn] = useState(false)
-	const { address } = useAccount()
+	const { address, connector: activeConnector } = useAccount()
+	const { theme } = useTheme()
 
 	const provider = new ethers.InfuraProvider('sepolia', process.env.NEXT_PUBLIC_INFURA_API_KEY)
 	const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
 
-	const getData = async () => {
+	const fetchData = async () => {
 		const data = await contract.state(gameID)
 		setState(data as State)
 	}
@@ -58,8 +59,9 @@ const Kalah: FC<Props> = ({ slug }) => {
 		onSuccess(res) {
 			const data = res as State
 			setState(data)
+			setWin(data[3])
 			setIsViewer(!(address == data[0][1] || address == data[0][0]))
-			setTurn(data[0][Number(data[2]) % 2] == address)
+			setTurn(data[0][Number(data[2]) % 2] == data[0][0])
 		},
 	})
 
@@ -68,20 +70,15 @@ const Kalah: FC<Props> = ({ slug }) => {
 		abi: KalahaData.abi,
 		eventName: 'Move',
 		listener() {
-			getData()
+			fetchData()
 		},
 	})
 
-	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
-		abi: KalahaData.abi,
-		eventName: 'Win',
-		listener() {
-			setWin(true)
-		},
-	})
-
-	const { theme } = useTheme()
+	useEffect(() => {
+		if (activeConnector) {
+			activeConnector.on('change', () => fetchData())
+		}
+	}, [activeConnector])
 
 	if (typeof state == 'undefined' || isLoading) {
 		return (
@@ -92,20 +89,34 @@ const Kalah: FC<Props> = ({ slug }) => {
 				height={272}
 			/>
 		)
-	} else if (win) {
-		return <p>WP the winner is {state[3]}</p>
+	} else if (state[0][0] == ethers.ZeroAddress) {
+		return <h1 className="text-3xl dark:text-light text-dark font-bold">Game not found</h1>
 	} else {
 		return (
 			<>
-				<div>
-					<div className="dark:text-light text-dark text-2xl">
-						{isViewer ? (
-							<>{turn ? `${shortenAddress(state[0][0])}'s turn` : `${shortenAddress(state[0][1])}'s turn`}</>
-						) : (
-							<>{turn ? 'Your turn' : "Opponent's turn"}</>
-						)}
-					</div>
-					<Board address={address} isViewer={isViewer} gameID={gameID} board={state[1]} players={state[0]} />
+				<div className="dark:text-light text-dark font-bold text-2xl">
+					{isViewer
+						? win != ethers.ZeroAddress
+							? `${shortenAddress(win)} won`
+							: turn
+							? `${shortenAddress(state[0][0])}'s turn`
+							: `${shortenAddress(state[0][1])}'s turn`
+						: win != ethers.ZeroAddress
+						? win == address
+							? 'You won'
+							: 'You lost'
+						: state[0][Number(state[2]) % 2] == address
+						? 'Your turn'
+						: "Opponent's turn"}
+
+					<Board
+						address={address}
+						isViewer={isViewer}
+						turn={state[0][Number(state[2]) % 2] == address}
+						gameID={gameID}
+						board={state[1]}
+						players={state[0]}
+					/>
 				</div>
 			</>
 		)

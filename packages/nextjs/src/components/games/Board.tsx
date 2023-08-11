@@ -1,7 +1,7 @@
 import React from 'react'
 import { House } from './House'
 
-const Board = ({ gameID, board, players, isViewer, address }) => {
+const Board = ({ gameID, board, turn, players, isViewer, address }) => {
 	const p1 = address != players[1]
 	const tmp = p1 ? 0 : 7
 	return (
@@ -10,8 +10,8 @@ const Board = ({ gameID, board, players, isViewer, address }) => {
 				<div className="flex font-rubik lg:text-3xl md:text-xl text-sm dark:text-light text-dark space-x-4">
 					<UnifiedPocket value={board[13 - tmp]} />
 					<div className="flex flex-col space-y-4">
-						<div className="flex space-x-4">{renderPockets(isViewer, p1, 7 - tmp, board, gameID).reverse()}</div>
-						<div className="flex space-x-4">{renderPockets(isViewer, p1, tmp, board, gameID)}</div>
+						<div className="flex space-x-4">{renderPockets(turn, isViewer, p1, 7 - tmp, board, gameID).reverse()}</div>
+						<div className="flex space-x-4">{renderPockets(turn, isViewer, p1, tmp, board, gameID)}</div>
 					</div>
 					<UnifiedPocket value={board[6 + tmp]} />
 				</div>
@@ -28,13 +28,21 @@ const UnifiedPocket = (value: { value: any }) => {
 	)
 }
 
-const renderPockets = (isViewer: boolean, p1: boolean, tmp: number, board: { [x: string]: any }, gameID: any) => {
+const renderPockets = (
+	turn: boolean,
+	isViewer: boolean,
+	p1: boolean,
+	tmp: number,
+	board: { [x: string]: any },
+	gameID: any
+) => {
 	const pockets = []
 	for (let i = 0; i <= 5; i++) {
 		let prop = {
 			isViewer: isViewer,
 			disable: (p1 && tmp == 7) || (!p1 && tmp == 0),
 			gameID: gameID,
+			turn: turn,
 			value: Number(board[tmp + i]),
 			id: Number(i),
 		}
