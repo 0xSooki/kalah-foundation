@@ -43,7 +43,7 @@ const Games = () => {
 	return (
 		<>
 			<div className="min-h-screen flex bg-light dark:bg-dark flex-col justify-between">
-				<div className="mt-24 flex flex-col gap-12 items-center justify-center">
+				<div className="mt-24 mb-12 flex flex-col gap-12 items-center justify-center">
 					<div className="flex">
 						<h1 className="font-bold text-4xl text-dark dark:text-light">Active Games</h1>
 
@@ -69,7 +69,7 @@ const Games = () => {
 							/>
 						</div>
 					) : (
-						data.games.map(game => <GameCard key={game.id} gameID={game.gameID} />)
+						data.games.map(game => <GameCard address={game.player1} key={game.id} gameID={game.gameID} />)
 					)}
 				</div>
 			</div>
