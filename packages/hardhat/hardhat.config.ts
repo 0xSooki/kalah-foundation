@@ -18,14 +18,26 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 1337,
     },
-    // sepolia: {
-    //   url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    //   accounts: [process.env.SEPOLIA_PRIVATE_KEY as string],
-    // },
+    optimismGoerli: {
+      url: process.env.OPTIMISM_KEY,
+      accounts: [process.env.PRIVATE_KEY as string],
+    },
+    baseGoerli: {
+      url: process.env.BASE_GOERLI_RPC,
+      accounts: [process.env.PRIVATE_KEY as string],
+    },
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [process.env.SEPOLIA_PRIVATE_KEY as string],
+    },
   },
 
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_API_KEY as string,
+      optimisticGoerli: process.env.OPSCAN_API_KEY as string,
+      baseGoerli: process.env.BASESCAN_API_KEY as string,
+    },
   },
 
   gasReporter: {
