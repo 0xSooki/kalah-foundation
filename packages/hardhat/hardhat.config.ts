@@ -33,6 +33,7 @@ const config: HardhatUserConfig = {
     zoraGoerli: {
       url: "https://testnet.rpc.zora.energy/",
       accounts: [process.env.PRIVATE_KEY as string],
+      gasPrice: 500000000,
     },
   },
 
