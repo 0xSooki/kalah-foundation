@@ -55,7 +55,7 @@ const Header = () => {
 							return (
 								<li key={item.name}>
 									<Link
-										className="btn btn-sm btn-ghost normal-case font-bold text-lg text-dark dark:text-light"
+										className="btn btn-sm btn-ghost font-born normal-case font-bold text-2xl text-dark dark:text-light"
 										href={item.path}
 									>
 										{item.name}

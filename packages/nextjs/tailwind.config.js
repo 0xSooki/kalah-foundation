@@ -23,8 +23,11 @@ module.exports = {
 		fontFamily: {
 			rubik: ['Rubik Mono One', 'sans-serif'],
 		},
+		fontFamily: {
+			born: ['Bornrounded', 'sans-serif'],
+		},
 		extend: {
-			width: { 18: '72px' },
+			width: { 18: '72px', 100: '34rem' },
 			height: { 18: '72px' },
 			colors: {
 				brand: '#FF822C',

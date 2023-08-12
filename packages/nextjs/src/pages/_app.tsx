@@ -1,5 +1,6 @@
 import 'tailwindcss/tailwind.css'
 import 'react-loading-skeleton/dist/skeleton.css'
+import '../styles/globals.css'
 import { ThemeProvider } from 'next-themes'
 import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
@@ -62,7 +63,7 @@ const App = ({
 							<ApolloProvider client={client}>
 								<div className="flex flex-col min-h-screen">
 									<Header />
-									<main className="relative flex flex-col flex-1">
+									<main className="relative mt-12 flex flex-col flex-1">
 										<Component {...pageProps} />
 									</main>
 									<Footer />
