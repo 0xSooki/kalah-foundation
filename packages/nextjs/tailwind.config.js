@@ -12,15 +12,27 @@ module.exports = {
 		prefix: '',
 		themes: [
 			{
-				default: {
+				light: {
 					primary: '#64230D',
 					secondary: '#FCF2C1',
+				},
+			},
+			{
+				dark: {
+					primary: '#FCF2C1',
+					secondary: '#64230D',
 				},
 			},
 		],
 	},
 	theme: {
 		extend: {
+			fontFamily: {
+				primary: 'Bornroundeddemo',
+			},
+			fontFamily: {
+				born: ['Bornroundeddemo', 'sans-serif'],
+			},
 			colors: {
 				brand: '#FF822C',
 				darkest: '#240C04',

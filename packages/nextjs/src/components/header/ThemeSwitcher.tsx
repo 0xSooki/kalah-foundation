@@ -7,14 +7,12 @@ const ThemeSwitcher = ({ className = '' }) => {
 
 	const toggleTheme = useCallback(() => {
 		setTheme(theme === 'light' ? 'dark' : 'light')
+		document.querySelector('html').setAttribute('data-theme', theme === 'light' ? 'dark' : 'light')
 	}, [theme, setTheme])
 
 	return (
-		<button
-			onClick={toggleTheme}
-			className={`${className} border-gray-300 dark:border-gray-800 text-dark dark:text-light`}
-		>
-			{theme == 'light' ? <MoonIcon className="w-8 h-8" /> : <SunIcon className="w-8 h-8" />}
+		<button onClick={toggleTheme} className={`${className} text-primary`}>
+			{theme === 'light' ? <MoonIcon className="w-8 h-8" /> : <SunIcon className="w-8 h-8" />}
 		</button>
 	)
 }
