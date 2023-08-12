@@ -1,7 +1,7 @@
 import React from 'react'
 import { House } from './House'
 
-const Board = ({ gameID, board, turn, players, isViewer, address }) => {
+const Board = ({ gameID, board, turn, players, isViewer, address, lMove }) => {
 	const p1 = address != players[1]
 	const tmp = p1 ? 0 : 7
 	return (
@@ -10,8 +10,8 @@ const Board = ({ gameID, board, turn, players, isViewer, address }) => {
 				<div className="flex font-rubik lg:text-3xl md:text-xl text-sm dark:text-light text-dark space-x-4">
 					<UnifiedPocket value={board[13 - tmp]} />
 					<div className="flex flex-col space-y-4">
-						<div className="flex space-x-4">{renderPockets(turn, isViewer, p1, 7 - tmp, board, gameID).reverse()}</div>
-						<div className="flex space-x-4">{renderPockets(turn, isViewer, p1, tmp, board, gameID)}</div>
+						<div className="flex space-x-4">{renderPockets(turn, isViewer, p1, 7 - tmp, board, gameID, lMove).reverse()}</div>
+						<div className="flex space-x-4">{renderPockets(turn, isViewer, p1, tmp, board, gameID, lMove)}</div>
 					</div>
 					<UnifiedPocket value={board[6 + tmp]} />
 				</div>
@@ -34,7 +34,8 @@ const renderPockets = (
 	p1: boolean,
 	tmp: number,
 	board: { [x: string]: any },
-	gameID: any
+	gameID: any,
+	lMove: number
 ) => {
 	const pockets = []
 	for (let i = 0; i <= 5; i++) {
@@ -45,6 +46,8 @@ const renderPockets = (
 			turn: turn,
 			value: Number(board[tmp + i]),
 			id: Number(i),
+			idA: i+tmp,
+			lMove: lMove
 		}
 		pockets.push(
 			<div key={i}>

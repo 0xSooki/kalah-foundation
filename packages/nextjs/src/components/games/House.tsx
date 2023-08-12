@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 
-export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
+export const House = ({ isViewer, disable, gameID, turn, value, id, idA, lMove }) => {
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -27,7 +28,6 @@ export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
 		args: [gameID, id],
 		enabled: false,
 	})
-
 	const { data, write } = useContractWrite(config)
 	return (
 		<button
@@ -36,7 +36,7 @@ export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
 				await refetch()
 				write?.()
 			}}
-			className="lg:w-24 lg:h-24 md:w-18 md:h-18 h-12 w-12 dark:bg-dark bg-light rounded-2xl flex justify-center items-center"
+			className={"lg:w-24 lg:h-24 md:w-18 md:h-18 h-12 w-12 dark:bg-dark bg-light rounded-2xl flex justify-center items-center "+ ( lMove==idA ? 'border-4 border-brand ' : '')}
 		>
 			{value}
 		</button>
