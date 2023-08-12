@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
-// ... (import statements and other code)
+import { CONTRACT_ADDRESS } from '@/lib/consts'
 
 const Games = () => {
 	const pageSize = 5
@@ -12,7 +12,7 @@ const Games = () => {
 	const [allGames, setAllGames] = useState([])
 
 	const { config, refetch } = usePrepareContractWrite({
-		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
+		address: CONTRACT_ADDRESS,
 		abi: [
 			{
 				inputs: [],

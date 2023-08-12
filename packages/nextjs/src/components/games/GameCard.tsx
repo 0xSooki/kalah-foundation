@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React, { FC } from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 import classNames from '@/lib/classNames'
+import { CONTRACT_ADDRESS } from '@/lib/consts'
 
 interface IGameCard {
 	gameID: number
@@ -12,7 +13,7 @@ interface IGameCard {
 
 const GameCard: FC<IGameCard> = ({ gameID, address, className = '' }) => {
 	const { config, refetch } = usePrepareContractWrite({
-		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
+		address: CONTRACT_ADDRESS,
 		abi: [
 			{
 				inputs: [

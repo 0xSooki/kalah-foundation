@@ -1,8 +1,9 @@
+import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 
 export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
 	const { config, refetch } = usePrepareContractWrite({
-		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
+		address: CONTRACT_ADDRESS,
 		abi: [
 			{
 				inputs: [

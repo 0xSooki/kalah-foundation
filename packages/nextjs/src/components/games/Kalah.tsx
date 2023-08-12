@@ -84,7 +84,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	})
 
 	const { config, refetch } = usePrepareContractWrite({
-		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
+		address: CONTRACT_ADDRESS,
 		abi: [
 			{
 				inputs: [

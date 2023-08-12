@@ -28,13 +28,13 @@ const config: HardhatUserConfig = {
     },
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [process.env.SEPOLIA_PRIVATE_KEY as string],
+      accounts: [process.env.PRIVATE_KEY as string],
     },
   },
 
   etherscan: {
     apiKey: {
-      mainnet: process.env.ETHERSCAN_API_KEY as string,
+      sepolia: process.env.ETHERSCAN_API_KEY as string,
       optimisticGoerli: process.env.OPSCAN_API_KEY as string,
       baseGoerli: process.env.BASESCAN_API_KEY as string,
     },
