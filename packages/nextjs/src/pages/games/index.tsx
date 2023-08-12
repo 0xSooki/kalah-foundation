@@ -1,18 +1,16 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
-
-interface Game {
-	id: string
-	gameID: number
-	player1: string
-	player2: string
-}
+// ... (import statements and other code)
 
 const Games = () => {
+	const pageSize = 5
+	const [currentPage, setCurrentPage] = useState(1)
+	const [allGames, setAllGames] = useState([])
+
 	const { config, refetch } = usePrepareContractWrite({
 		address: '0x98954ff59b91da3F183e9BA0111A25Be7778B7C0',
 		abi: [
@@ -28,8 +26,8 @@ const Games = () => {
 	})
 
 	const GET_GAMES = gql`
-		query GetGames {
-			games(first: 5, where: { player2: "0x0000000000000000000000000000000000000000" }) {
+		query GetGames($first: Int!, $skip: Int!) {
+			games(first: $first, skip: $skip, where: { player2: "0x0000000000000000000000000000000000000000" }) {
 				id
 				gameID
 				player1
@@ -37,16 +35,45 @@ const Games = () => {
 			}
 		}
 	`
-	const { loading, error, data } = useQuery(GET_GAMES)
+
+	const { loading, error, data, fetchMore } = useQuery(GET_GAMES, {
+		variables: {
+			first: pageSize,
+			skip: (currentPage - 1) * pageSize,
+		},
+	})
 
 	const { write } = useContractWrite(config)
+
+	const handleLoadMore = () => {
+		fetchMore({
+			variables: {
+				first: pageSize,
+				skip: currentPage * pageSize,
+			},
+			updateQuery: (prev, { fetchMoreResult }) => {
+				if (!fetchMoreResult) return prev
+				return Object.assign({}, prev, {
+					games: [...prev.games, ...fetchMoreResult.games],
+				})
+			},
+		})
+		setCurrentPage(prevPage => prevPage + 1)
+	}
+
+	useEffect(() => {
+		if (data && data.games) {
+			const newGames = data.games.filter(newGame => !allGames.some(existingGame => existingGame.id === newGame.id))
+			setAllGames(prevGames => [...prevGames, ...newGames].sort((a, b) => a.id - b.id))
+		}
+	}, [data])
+
 	return (
 		<>
-			<div className="min-h-screen flex bg-light dark:bg-dark flex-col justify-between">
-				<div className="mt-24 mb-12 flex flex-col gap-12 items-center justify-center">
-					<div className="flex">
+			<div className="min-h-screen flex bg-light dark:bg-dark flex-col">
+				<div className="mt-24 flex flex-col items-center justify-center">
+					<div className="flex mb-10">
 						<h1 className="font-bold text-4xl text-dark dark:text-light">Active Games</h1>
-
 						<button
 							onClick={async () => {
 								await refetch()
@@ -57,19 +84,33 @@ const Games = () => {
 							New Game
 						</button>
 					</div>
-					{data == undefined ? (
-						<div>
-							<Skeleton
-								highlightColor="#FFFFFF"
-								count={3}
-								width={384}
-								className="mb-12 shadow-xl rounded-3xl dark:bg-light bg-dark"
-								borderRadius={12}
-								height={180}
-							/>
-						</div>
+					{allGames.length === 0 ? (
+						<Skeleton
+							highlightColor="#FFFFFF"
+							count={8}
+							width={320}
+							containerClassName="flex w-screen justify-center flex-wrap"
+							className="m-4 shadow-xl rounded-3xl dark:bg-light bg-dark"
+							borderRadius={12}
+							height={180}
+						/>
 					) : (
-						data.games.map(game => <GameCard address={game.player1} key={game.id} gameID={game.gameID} />)
+						<div className="flex w-screen justify-center flex-wrap">
+							{allGames.map(game => (
+								<GameCard key={game.id} className="m-4" address={game.player1} gameID={game.gameID} />
+							))}
+						</div>
+					)}
+				</div>
+				<div className="flex justify-center mb-8 items-center mt-8">
+					{(!data || data.games.length >= pageSize) && (
+						<button onClick={handleLoadMore} className="btn btn-primary dark:btn-secondary">
+							{loading ? 'Loading...' : 'Load More'}
+						</button>
+					)}
+
+					{!loading && (!data || data.games.length < pageSize) && (
+						<p className="text-xl font-bold text-dark dark:text-light mt-2">All caught up!</p>
 					)}
 				</div>
 			</div>
