@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 abstract contract IKalaha {
     event NewGame(uint256 _game, address _by);
     event Join(uint256 _game, address _by);
-    event Move(uint256 _game, uint8 x);
+    event Move(uint256 _game, uint8 x, address _by);
     event Win(uint256 _game, address _winner, address _by);
     event Start(uint256 _game, address _by);
 
