@@ -7,6 +7,7 @@ import { ethers } from 'ethers'
 import Skeleton from 'react-loading-skeleton'
 import { useTheme } from 'next-themes'
 import { shortenAddress } from '@/lib/shortenAddress'
+import { getNetwork } from '@wagmi/core'
 
 interface State {
 	players: [string, string]
@@ -42,8 +43,9 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [turn, setTurn] = useState(false)
 	const { address, connector: activeConnector } = useAccount()
 	const { theme } = useTheme()
+	const { chain } = getNetwork()
 
-	const provider = new ethers.InfuraProvider('sepolia', process.env.NEXT_PUBLIC_INFURA_API_KEY)
+	const provider = ethers.getDefaultProvider(chain.network)
 	const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
 
 	const fetchData = async () => {
