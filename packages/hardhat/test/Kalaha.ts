@@ -162,8 +162,42 @@ describe("Kalaha", function () {
     await kalah.connect(player2).move(gameID, 5);
     await kalah.connect(player1).move(gameID, 0);
 
+    const state = await kalah.state(gameID);
+    expect(state.winner).to.equal(player2.address);
+  });
+
+  it("should emit Win event when player 2 wins", async function () {
+    const gameID = 1;
+
+    await kalah.connect(player1).newGame();
+    await kalah.connect(player2).join(gameID);
+    await kalah.setBoard(1, [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0]);
+    await kalah.connect(player1).move(gameID, 5);
+    await kalah.connect(player1).move(gameID, 4);
     printBoard((await kalah.state(gameID)).board);
 
+    await kalah.connect(player2).move(gameID, 5);
+    printBoard((await kalah.state(gameID)).board);
+
+    await kalah.connect(player1).move(gameID, 5);
+    printBoard((await kalah.state(gameID)).board);
+
+    const state = await kalah.state(gameID);
+    expect(state.winner).to.equal(player2.address);
+  });
+
+  it("should emit Win event when player 2 wins", async function () {
+    const gameID = 1;
+
+    await kalah.connect(player1).newGame();
+    await kalah.connect(player2).join(gameID);
+    await kalah.setBoard(1, [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0]);
+    await kalah.connect(player1).move(gameID, 3);
+    await kalah.connect(player2).move(gameID, 5);
+    await kalah.connect(player1).move(gameID, 5);
+    await kalah.connect(player1).move(gameID, 4);
+
+    printBoard((await kalah.state(gameID)).board);
     const state = await kalah.state(gameID);
     expect(state.winner).to.equal(player2.address);
   });

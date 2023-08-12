@@ -21,6 +21,10 @@ contract Kalaha is IKalaha {
         _;
     }
 
+    function setBoard(uint256 _game, uint8[14] memory _board) external {
+        games[_game].board = _board;
+    }
+
     function state(
         uint256 _game
     )
