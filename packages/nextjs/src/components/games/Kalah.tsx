@@ -1,14 +1,7 @@
 import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
-import {
-	useContractRead,
-	useContractEvent,
-	useAccount,
-	ConnectorData,
-	useContractWrite,
-	usePrepareContractWrite,
-} from 'wagmi'
+import { useContractRead, useContractEvent, useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
 import Skeleton from 'react-loading-skeleton'
@@ -134,22 +127,24 @@ const Kalah: FC<Props> = ({ slug }) => {
 	} else {
 		return (
 			<>
-				<div className="dark:text-light text-dark font-bold text-2xl">
-					{state[0][1] == ethers.ZeroAddress
-						? 'waiting for opponent'
-						: isViewer
-						? win != ethers.ZeroAddress
-							? `${shortenAddress(win)} won`
-							: turn
-							? `${shortenAddress(state[0][0])}'s turn`
-							: `${shortenAddress(state[0][1])}'s turn`
-						: win != ethers.ZeroAddress
-						? win == address
-							? 'You won'
-							: 'You lost'
-						: state[0][Number(state[2]) % 2] == address
-						? 'Your turn'
-						: "Opponent's turn"}
+				<div className="dark:text-light text-4xl text-dark font-bold">
+					<span className="font-born ">
+						{state[0][1] == ethers.ZeroAddress
+							? 'waiting for opponent'
+							: isViewer
+							? win != ethers.ZeroAddress
+								? `${shortenAddress(win)} won`
+								: turn
+								? `${shortenAddress(state[0][0])}'s turn`
+								: `${shortenAddress(state[0][1])}'s turn`
+							: win != ethers.ZeroAddress
+							? win == address
+								? 'You won'
+								: 'You lost'
+							: state[0][Number(state[2]) % 2] == address
+							? 'Your turn'
+							: "Opponent's turn"}
+					</span>
 					<Board
 						address={address}
 						isViewer={isViewer}
@@ -165,7 +160,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 									await refetch()
 									write?.()
 								}}
-								className="btn ml-auto dark:btn-secondary btn-primary"
+								className="btn font-bold ml-auto dark:btn-secondary btn-primary"
 							>
 								JOIN GAME
 							</button>

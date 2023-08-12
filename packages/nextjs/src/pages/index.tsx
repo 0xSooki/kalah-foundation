@@ -72,15 +72,15 @@ const Home: FC = () => {
 								<div className="card w-96 lg:w-100 shadow-2xl bg-dark dark:bg-light text-light dark:text-dark">
 									<div className="card-body items-center text-center">
 										<h2 className="card-title mb-4 text-3xl font-born">Most recent moves</h2>
-										<div className="overflow-y-auto h-80">
+										<div className="overflow-y-auto overflow-x-hidden w-full h-80">
 											{moveHistory.length === 0 ? (
-												<div className="">No recent moves</div>
+												<div className="font-born">No recent moves</div>
 											) : (
 												moveHistory.map((move, id) => {
 													return (
 														<div
 															key={id}
-															className="bg-light dark:bg-dark w-full mr-1 mb-3 text-dark dark:text-light p-2 rounded-lg"
+															className="bg-light dark:bg-dark text-xl pt-3 font-born w-full mr-1 mb-3 text-dark dark:text-light p-2 rounded-lg"
 														>
 															Move form house {move.args.x} in game {Number(move.args._game)} (
 															<a
@@ -109,11 +109,11 @@ const Home: FC = () => {
 											{games.map((game, id) => {
 												return (
 													<a
-														className="bg-light h-16 flex items-center justify-center text-dark dark:text-light rounded-lg dark:bg-dark w-full mr-1 mb-3"
+														className="bg-light h-16 flex items-center justify-center text-dark dark:text-light rounded-lg dark:bg-dark w-full mr-1 mb-4"
 														key={id}
 														href={`/games/${game.id}`}
 													>
-														<p>
+														<p className="mt-2 font-born text-xl">
 															Game {game.id}, {shortenAddress(game.player1)}
 														</p>
 														<button className="btn mr-4 dark:btn-secondary btn-sm btn-primary">join</button>
@@ -132,11 +132,11 @@ const Home: FC = () => {
 											{games.map((game, id) => {
 												return (
 													<a
-														className="bg-light h-16 flex items-center justify-center text-dark dark:text-light rounded-lg dark:bg-dark w-full mr-1 mb-3"
+														className="bg-light h-16 mb-4 flex items-center justify-center text-dark dark:text-light rounded-lg dark:bg-dark w-full mr-1"
 														key={id}
 														href={`/games/${game.id}`}
 													>
-														<p>
+														<p className="font-born text-xl mt-2">
 															Game {game.id}, {shortenAddress(game.player1)}
 														</p>
 														<button className="btn mr-4 dark:btn-secondary btn-sm btn-primary">join</button>

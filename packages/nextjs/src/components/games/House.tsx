@@ -38,7 +38,7 @@ export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
 			}}
 			className="lg:w-24 lg:h-24 md:w-18 md:h-18 h-12 w-12 dark:bg-dark bg-light rounded-2xl flex justify-center items-center"
 		>
-			{value}
+			<span className="mt-3">{value}</span>
 		</button>
 	)
 }

@@ -7,7 +7,7 @@ import KalahFoundLogo from './shared/KalahFoundLogo'
 
 const Footer = () => {
 	return (
-		<footer className="p-10 dark:bg-darkest w-full bg-lightest">
+		<footer className="p-10 dark:bg-darkest font-born w-full bg-lightest">
 			<div className="flex items-center justify-center mx-14">
 				<div className="lg:flex-1 text-dark dark:text-light">
 					<div className="flex mb-2 font-bold normal-case ml-2 text-3xl">
@@ -17,7 +17,7 @@ const Footer = () => {
 							<KalahFoundLogo w={180} h={60} />
 						</div>
 					</div>
-					<p className="mb-4">Copyright © 2023 Kalah Foundation</p>
+					<p className="mb-4 text-xl ml-2">Copyright © 2023 Kalah Foundation</p>
 					<div className="flex gap-7">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@ const Footer = () => {
 							return (
 								<li key={item.name}>
 									<Link
-										className="flex mb-2 justify-end normal-case font-bold text-xl text-dark dark:text-light"
+										className="flex mb-2 justify-end text-2xl normal-case font-bold text-dark dark:text-light"
 										href={item.path}
 									>
 										{item.name}
