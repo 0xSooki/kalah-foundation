@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
+import Clock from './Clock'
 import { useContractRead, useContractEvent, useAccount, ConnectorData } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
@@ -95,6 +96,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 		return (
 			<>
 				<div className="dark:text-light text-dark font-bold text-2xl">
+					<Clock p1={turn} rem1={3600000} rem2={3600000} />
 					{isViewer
 						? win != ethers.ZeroAddress
 							? `${shortenAddress(win)} won`
