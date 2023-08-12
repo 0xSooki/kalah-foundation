@@ -56,12 +56,11 @@ const Home: FC = () => {
 										<h2 className="card-title text-3xl font-born">Rules</h2>
 										<ul className="text-start font-born text-2xl list-disc list-inside">
 											<li>Kalah is a two-player board game.</li>
-											<li>Players have 6 small pits and 1 large "Kalah" pit each.</li>
-											<li>Players take turns moving seeds from pits.</li>
-											<li>Drop seeds in pits and capture if the last lands in an empty pit.</li>
-											<li>Land in your "Kalah" to get another turn.</li>
-											<li>The game ends when one side is empty.</li>
-											<li>Count captured seeds and seeds in "Kalah" to determine the winner.</li>
+											<li>Players have 6 small pits and 1 large Kalah pit each.</li>
+											<li>Players take turns moving all seeds from one of their pits and putting one in each following pit or Kalah counterclockwise.</li>
+											<li>Land in your Kalah to get another turn.</li>
+											<li>The game ends when a player's side is empty at the start of their turn.</li>
+											<li>You can't win with an extra turn.</li>
 										</ul>
 										<div className="card-actions justify-end"></div>
 									</div>
