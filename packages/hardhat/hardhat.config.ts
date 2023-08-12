@@ -30,6 +30,10 @@ const config: HardhatUserConfig = {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
       accounts: [process.env.PRIVATE_KEY as string],
     },
+    zoraGoerli: {
+      url: "https://testnet.rpc.zora.energy/",
+      accounts: [process.env.PRIVATE_KEY as string],
+    },
   },
 
   etherscan: {

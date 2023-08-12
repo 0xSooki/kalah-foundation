@@ -40,7 +40,7 @@ export const ConnectButton = () => {
 							}
 							return (
 								<div style={{ display: 'flex', gap: 12 }}>
-									{/* <button
+									<button
 										className="btn btn-sm btn-primary dark:btn-secondary"
 										onClick={openChainModal}
 										style={{ display: 'flex', alignItems: 'center' }}
@@ -63,7 +63,7 @@ export const ConnectButton = () => {
 											</div>
 										)}
 										{chain.name}
-									</button> */}
+									</button>
 									<button
 										className="btn btn-sm btn-primary dark:btn-secondary"
 										onClick={openAccountModal}

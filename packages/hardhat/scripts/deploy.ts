@@ -27,7 +27,8 @@ const exportAddress = async (
 };
 
 async function main() {
-  const kalaha = await ethers.deployContract("Kalaha");
+  const kalahFactory = await ethers.getContractFactory("Kalaha");
+  const kalaha = await kalahFactory.deploy();
 
   await kalaha.waitForDeployment();
   // await kalaha.connect(deployer).newGame();

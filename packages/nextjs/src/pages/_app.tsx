@@ -11,7 +11,7 @@ import { WagmiConfig } from 'wagmi'
 import '@rainbow-me/rainbowkit/styles.css'
 import { darkTheme, getDefaultWallets, lightTheme } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig } from 'wagmi'
-import { sepolia, hardhat, localhost } from 'wagmi/chains'
+import { sepolia, baseGoerli, optimismGoerli, zoraTestnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { useTheme } from 'next-themes'
@@ -22,7 +22,7 @@ import Header from '@/components/header/Header'
 import Footer from '@/components/Footer'
 
 const { chains, publicClient } = configureChains(
-	[sepolia, hardhat, localhost],
+	[sepolia, baseGoerli, optimismGoerli, zoraTestnet],
 	[alchemyProvider({ apiKey: ALCHEMY_ID }), publicProvider()]
 )
 
