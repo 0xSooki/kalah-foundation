@@ -94,12 +94,11 @@ contract Kalaha is IKalaha {
 
         if ((x + houseValue + tmp) % 14 != 6 + tmp || b) {
             game.nonce++;
-        }
-
-        if (c) {
-            address winner = game.players[game.nonce % 2];
-            game.winner = winner;
-            emit Win(_game, winner, msg.sender);
+            if (c) {
+                address winner = game.players[game.nonce % 2];
+                game.winner = winner;
+                emit Win(_game, winner, msg.sender);
+            }
         }
     }
 }
