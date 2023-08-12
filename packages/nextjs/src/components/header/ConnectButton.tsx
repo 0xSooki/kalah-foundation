@@ -70,7 +70,7 @@ export const ConnectButton = () => {
 										type="button"
 									>
 										{account.displayName}
-										{account.displayBalance ? ` (${account.displayBalance})` : ''}
+										{/* {account.displayBalance ? ` (${account.displayBalance})` : ''} */}
 									</button>
 								</div>
 							)

@@ -14,7 +14,7 @@ const ThemeSwitcher = ({ className = '' }) => {
 			onClick={toggleTheme}
 			className={`${className} border-gray-300 dark:border-gray-800 text-dark dark:text-light`}
 		>
-			{theme == 'light' ? <MoonIcon className="w-8 h-8" /> : <SunIcon className="w-8 h-8" />}
+			{theme === 'light' ? <MoonIcon className="w-8 h-8" /> : <SunIcon className="w-8 h-8" />}
 		</button>
 	)
 }

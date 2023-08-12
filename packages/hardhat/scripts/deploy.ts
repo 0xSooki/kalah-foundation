@@ -27,24 +27,18 @@ const exportAddress = async (
 };
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  const kalahFactory = await ethers.getContractFactory("Kalaha");
+  const kalaha = await kalahFactory.deploy();
 
-  const lockedAmount = ethers.parseEther("0.001");
+  await kalaha.waitForDeployment();
+  // await kalaha.connect(deployer).newGame();
+  // let state = await kalaha.state(1);
 
-  const lock = await ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  // console.log(state);
 
-  await lock.waitForDeployment();
+  console.log(`Kalah deployed to ${kalaha.target}`);
 
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
-
-  await exportAddress("Lock", lock.target);
+  await exportAddress("Kalaha", kalaha.target);
 }
 
 main().catch((error) => {

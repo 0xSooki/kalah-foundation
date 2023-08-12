@@ -20,14 +20,22 @@ module.exports = {
 		],
 	},
 	theme: {
+		fontFamily: {
+			rubik: ['Rubik Mono One', 'sans-serif'],
+		},
+		fontFamily: {
+			born: ['Bornrounded', 'sans-serif'],
+		},
 		extend: {
+			width: { 18: '72px', 100: '34rem' },
+			height: { 18: '72px' },
 			colors: {
 				brand: '#FF822C',
 				darkest: '#240C04',
 				dark: '#64230D',
 				mid: '#FDE047',
 				light: '#FCF2C1',
-				lightest: '#FFFFFF',
+				lightest: '#fcf6d7',
 			},
 		},
 	},

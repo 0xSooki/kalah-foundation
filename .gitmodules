@@ -1,0 +1,3 @@
+[submodule "packages/graph"]
+	path = packages/graph
+	url = git@github.com:0xSooki/kalah-graph.git

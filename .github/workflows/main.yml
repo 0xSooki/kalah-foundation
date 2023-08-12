@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install packages
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.15.0"
+      - run: yarn ci:install
+        shell: bash
+      - name: Start Hardhat Node
+        run: npx hardhat node & # Run in the background
+        working-directory: packages/hardhat/
+      - name: Run Hardhat tests
+        run: npx hardhat test --network localhost
+        working-directory: packages/hardhat/

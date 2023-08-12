@@ -8,6 +8,7 @@
     "hnode": "cd packages/hardhat && yarn hnode",
     "deploy": "cd packages/hardhat && yarn deploy",
     "export": "cd packages/hardhat && yarn export",
-    "install": "cd packages/nextjs && yarn install && cd ../hardhat && npm i"
+    "install": "cd packages/nextjs && yarn install && cd ../hardhat && npm i",
+    "ci:install": "cd packages/hardhat && yarn install --frozen-lockfile"
   }
 }
