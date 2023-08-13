@@ -4,6 +4,7 @@ const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
 const OP_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_OP_CONTRACT_ADDRESS
 const GRAPH_API_URL = process.env.NEXT_PUBLIC_GRAPH_API_URL
+const GRAPH_API_URL_BASE = process.env.NEXT_PUBLIC_GRAPH_API_URL_BASE
 const OPTIMISM_KEY = process.env.NEXT_PUBLIC_OPTIMISM_KEY
 
 type address = `0x${string}`
@@ -13,6 +14,14 @@ const getContractAddress = (id: number): address => {
 		return OP_CONTRACT_ADDRESS as address
 	} else {
 		return CONTRACT_ADDRESS as address
+	}
+}
+
+const getGraphUrl = (id: number) => {
+	if (id === 84531) {
+		return process.env.NEXT_PUBLIC_GRAPH_API_URL_BASE
+	} else {
+		return process.env.NEXT_PUBLIC_GRAPH_API_URL as address
 	}
 }
 
@@ -58,4 +67,6 @@ export {
 	lightest,
 	OP_CONTRACT_ADDRESS,
 	getContractAddress,
+	getGraphUrl,
+	GRAPH_API_URL_BASE,
 }
