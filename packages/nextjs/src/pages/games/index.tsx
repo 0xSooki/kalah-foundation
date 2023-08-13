@@ -25,7 +25,7 @@ interface Log {
 }
 
 const Games = () => {
-	const pageSize = 5
+	const pageSize = 4
 	const [currentPage, setCurrentPage] = useState(1)
 	const [allGames, setAllGames] = useState([])
 	const [colors, setColors] = useState([])
