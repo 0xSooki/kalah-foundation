@@ -47,7 +47,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [win, setWin] = useState(ethers.ZeroAddress)
 	const [isViewer, setIsViewer] = useState(false)
 	const [turn, setTurn] = useState(false)
-	const [lMove, setlMove] = useState({ x: 0, _by: '0' })
+	const [lMove, setlMove] = useState({ x: 42, _by: '0' })
 	const { address, connector: activeConnector } = useAccount()
 	const { chain } = getNetwork()
 
