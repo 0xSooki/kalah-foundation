@@ -71,14 +71,21 @@ contract Kalaha is IKalaha {
         return verifiedUsers[_user];
     }
 
-    function newGame() external virtual override {
+    function newGame(
+        bool _verifiedOnly
+    ) external virtual override returns (uint256) {
         gameID++;
+        games[gameID].verifiedOnly = _verifiedOnly;
         games[gameID].players[0] = msg.sender;
         games[gameID].board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
         emit NewGame(gameID, msg.sender);
+        return gameID;
     }
 
     function join(uint256 _game) external virtual override joinable(_game) {
+        if (games[_game].verifiedOnly) {
+            require(verifiedUsers[msg.sender], "Not verified");
+        }
         games[_game].players[1] = msg.sender;
         emit Join(_game, msg.sender);
     }

@@ -13,8 +13,19 @@ import { printBoard } from "../utils/printBoard";
 async function deployKalahFixture() {
   const [player1, player2] = await ethers.getSigners();
 
-  const Kalah = await ethers.getContractFactory("Kalaha");
-  const kalah = await Kalah.deploy();
+  const kalahFactory = await ethers.getContractFactory("Kalaha");
+  const kalahVerifierFactory = await ethers.getContractFactory("KalahVerifier");
+
+  const kalahVerifier = await kalahVerifierFactory.deploy(
+    "0x515f06B36E6D3b707eAecBdeD18d8B384944c87f",
+    process.env.WLD_APP_ID as string,
+    "user-verification"
+  );
+
+  await kalahVerifier.waitForDeployment();
+  const kalah = await kalahFactory.deploy(kalahVerifier.target);
+
+  await kalah.waitForDeployment();
 
   return { kalah, player1, player2 };
 }
@@ -29,7 +40,7 @@ describe("Kalaha", function () {
   it("should allow player 1 to make a valid move", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     // Assuming it's player1's turn
@@ -43,7 +54,7 @@ describe("Kalaha", function () {
   it("should allow player 2 to make a valid move", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     // Assuming it's player1's turn
@@ -60,7 +71,7 @@ describe("Kalaha", function () {
   it("check double move for player1", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     // Set up a game where player 1 wins
@@ -74,7 +85,7 @@ describe("Kalaha", function () {
   it("check double move for player2", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     await kalah.connect(player1).move(gameID, 0);
@@ -88,7 +99,7 @@ describe("Kalaha", function () {
   it("check double move revert", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     // Player 1's move
@@ -103,7 +114,7 @@ describe("Kalaha", function () {
   it("check invalid move revert", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     await kalah.connect(player1).move(gameID, 3);
@@ -118,7 +129,7 @@ describe("Kalaha", function () {
   it("should emit Win event when player 1 wins", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
 
     await kalah.connect(player1).move(gameID, 0);
@@ -140,7 +151,7 @@ describe("Kalaha", function () {
   it("should emit Win event when player 2 wins", async function () {
     const gameID = 1;
 
-    await kalah.connect(player1).newGame();
+    await kalah.connect(player1).newGame(false);
     await kalah.connect(player2).join(gameID);
     await kalah.connect(player1).move(gameID, 3);
     await kalah.connect(player2).move(gameID, 2);

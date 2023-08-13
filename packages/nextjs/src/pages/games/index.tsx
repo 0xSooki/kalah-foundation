@@ -7,6 +7,8 @@ import Skeleton from 'react-loading-skeleton'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { useTheme } from 'next-themes'
 import { dark, darkest, light, lightest } from '@/lib/consts'
+import { useRouter } from 'next/router'
+import abi from '@/artifacts/Kalaha.sol/Kalaha.json'
 
 const Games = () => {
 	const pageSize = 5
@@ -14,19 +16,13 @@ const Games = () => {
 	const [allGames, setAllGames] = useState([])
 	const [colors, setColors] = useState([])
 	const { theme } = useTheme()
+	const router = useRouter()
 
 	const { config, refetch } = usePrepareContractWrite({
 		address: CONTRACT_ADDRESS,
-		abi: [
-			{
-				inputs: [],
-				name: 'newGame',
-				outputs: [],
-				stateMutability: 'nonpayable',
-				type: 'function',
-			},
-		],
+		abi: abi.abi,
 		functionName: 'newGame',
+		args: [false],
 	})
 
 	const GET_GAMES = gql`
@@ -90,6 +86,7 @@ const Games = () => {
 							onClick={async () => {
 								await refetch()
 								write?.()
+								router.push('/games')
 							}}
 							className="btn ml-8 btn-primary dark:btn-secondary"
 						>

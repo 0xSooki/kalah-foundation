@@ -21,6 +21,7 @@ const config: HardhatUserConfig = {
     optimismGoerli: {
       url: process.env.OPTIMISM_KEY,
       accounts: [process.env.PRIVATE_KEY1 as string],
+      gasPrice: 500000000,
     },
     baseGoerli: {
       url: process.env.BASE_GOERLI_RPC,

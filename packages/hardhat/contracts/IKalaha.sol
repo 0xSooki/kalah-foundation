@@ -17,6 +17,7 @@ abstract contract IKalaha {
         uint8[14] board;
         uint8 nonce;
         address winner;
+        bool verifiedOnly;
     }
     uint256 public gameID;
     mapping(uint256 => Game) games;
@@ -36,7 +37,9 @@ abstract contract IKalaha {
             address winner
         );
 
-    function newGame() external virtual;
+    function newGame(
+        bool verifiedOnly
+    ) external virtual returns (uint256 _game);
 
     function join(uint256 _game) external virtual;
 
