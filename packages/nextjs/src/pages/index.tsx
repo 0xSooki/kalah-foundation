@@ -64,7 +64,30 @@ const Home: FC = () => {
 				<div className="mx-10 mb-24">
 					<div className="text-dark mb-10 font-born dark:text-light text-4xl mt-24 text-center">
 						The first ever <span className="underline decoration-brand">permissionless</span> competetive kalah platform{' '}
-						<br /> governed by law of code and math
+						<br /> governed by law of code and math. Now live on{' '}
+						<a
+							target="_blank"
+							href={`https://goerli-optimism.etherscan.io/address/${CONTRACT_ADDRESS}`}
+							className="underline decoration-red-600"
+						>
+							Optimism
+						</a>
+						,{' '}
+						<a
+							target="_blank"
+							href={`https://goerli.basescan.org//address/${CONTRACT_ADDRESS}`}
+							className="underline decoration-blue-600"
+						>
+							Base
+						</a>{' '}
+						and{' '}
+						<a
+							target="_blank"
+							href={`https://testnet.explorer.zora.energy/address/${CONTRACT_ADDRESS}`}
+							className="underline decoration-green-800"
+						>
+							Zora
+						</a>
 					</div>
 					<div className="flex flex-col lg:items-start items-center justify-center lg:flex-row">
 						<div className="flex flex-col">
