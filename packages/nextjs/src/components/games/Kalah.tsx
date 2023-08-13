@@ -41,6 +41,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [win, setWin] = useState(ethers.ZeroAddress)
 	const [isViewer, setIsViewer] = useState(false)
 	const [turn, setTurn] = useState(false)
+	const [lMove, setlMove] = useState({x: 0, address: '0'})
 	const { address, connector: activeConnector } = useAccount()
 	const { theme } = useTheme()
 	const { chain } = getNetwork()
@@ -71,8 +72,10 @@ const Kalah: FC<Props> = ({ slug }) => {
 		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
 		abi: KalahaData.abi,
 		eventName: 'Move',
-		listener() {
+		listener(log) {
+			const f = log[0]
 			fetchData()
+			setlMove(f.args)
 		},
 	})
 
@@ -114,7 +117,6 @@ const Kalah: FC<Props> = ({ slug }) => {
 			activeConnector.on('change', () => fetchData())
 		}
 	}, [activeConnector])
-
 	if (typeof state == 'undefined' || isLoading) {
 		return (
 			<Skeleton
@@ -154,6 +156,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 						gameID={gameID}
 						board={state[1]}
 						players={state[0]}
+						lMove={(lMove.x + ((lMove._by == state[0][0]) ? 0 : 7))}
 					/>
 					<div className="w-full flex mt-4">
 						{state[0][1] == ethers.ZeroAddress && state[0][0] != address ? (
