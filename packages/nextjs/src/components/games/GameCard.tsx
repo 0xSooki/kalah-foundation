@@ -1,9 +1,9 @@
 import { shortenAddress } from '@/lib/shortenAddress'
 import Link from 'next/link'
 import React, { FC } from 'react'
-import { usePrepareContractWrite, useContractWrite, useContractRead } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useContractRead, useNetwork } from 'wagmi'
 import classNames from '@/lib/classNames'
-import { CONTRACT_ADDRESS } from '@/lib/consts'
+import { getContractAddress } from '@/lib/consts'
 import abi from '@/artifacts/Kalaha.sol/Kalaha.json'
 
 interface IGameCard {
@@ -13,8 +13,9 @@ interface IGameCard {
 }
 
 const GameCard: FC<IGameCard> = ({ gameID, address, className = '' }) => {
+	const { chain } = useNetwork()
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
+		address: getContractAddress(chain.id),
 		abi: [
 			{
 				inputs: [
@@ -36,7 +37,7 @@ const GameCard: FC<IGameCard> = ({ gameID, address, className = '' }) => {
 	})
 
 	const { data } = useContractRead({
-		address: CONTRACT_ADDRESS as `0x${string}`,
+		address: getContractAddress(chain.id),
 		abi: abi.abi,
 		functionName: 'isVerified',
 		args: [gameID],

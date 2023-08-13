@@ -1,10 +1,17 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
 import React, { useEffect, useState } from 'react'
-import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useContractEvent, useAccount } from 'wagmi'
+import {
+	usePrepareContractWrite,
+	useContractWrite,
+	useWaitForTransaction,
+	useContractEvent,
+	useAccount,
+	useNetwork,
+} from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
-import { CONTRACT_ADDRESS } from '@/lib/consts'
+import { getContractAddress } from '@/lib/consts'
 import { useTheme } from 'next-themes'
 import { dark, darkest, light, lightest } from '@/lib/consts'
 import { useRouter } from 'next/router'
@@ -26,9 +33,10 @@ const Games = () => {
 	const { theme } = useTheme()
 	const router = useRouter()
 	const { address } = useAccount()
+	const { chain } = useNetwork()
 
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
+		address: getContractAddress(chain?.id),
 		abi: abi.abi,
 		functionName: 'newGame',
 		args: [verifiedOnly],
@@ -59,7 +67,7 @@ const Games = () => {
 	const { write } = useContractWrite(config)
 
 	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain?.id),
 		abi: abi.abi,
 		eventName: 'NewGame',
 		listener(log) {

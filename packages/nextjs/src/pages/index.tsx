@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import { FC, use, useEffect, useState } from 'react'
-import { CONTRACT_ADDRESS } from '@/lib/consts'
+import { CONTRACT_ADDRESS, OP_CONTRACT_ADDRESS, getContractAddress } from '@/lib/consts'
 import KalahData from '@/artifacts/Kalaha.sol/Kalaha.json'
-import { useContractEvent } from 'wagmi'
+import { useContractEvent, useNetwork } from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import { shortenAddress } from '@/lib/shortenAddress'
 import Skeleton from 'react-loading-skeleton'
@@ -13,9 +13,10 @@ const Home: FC = () => {
 	const [moveHistory, setMoveHistory] = useState([])
 	const [colors, setColors] = useState([])
 	const { theme } = useTheme()
+	const { chain } = useNetwork()
 
 	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain?.id),
 		abi: KalahData.abi,
 		eventName: 'Move',
 		listener(log) {
@@ -67,7 +68,7 @@ const Home: FC = () => {
 						<br /> governed by law of code and math. Now live on{' '}
 						<a
 							target="_blank"
-							href={`https://goerli-optimism.etherscan.io/address/${CONTRACT_ADDRESS}`}
+							href={`https://goerli-optimism.etherscan.io/address/${OP_CONTRACT_ADDRESS}`}
 							className="underline decoration-red-600"
 						>
 							Optimism

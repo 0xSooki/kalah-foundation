@@ -2,11 +2,11 @@ import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
 import { useContractRead, useContractEvent, useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
-import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
 import { useTheme } from 'next-themes'
 import { shortenAddress } from '@/lib/shortenAddress'
 import { getNetwork } from '@wagmi/core'
+import { getContractAddress } from '@/lib/consts'
 
 interface State {
 	players: [string, string]
@@ -42,11 +42,10 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [turn, setTurn] = useState(false)
 	const [lMove, setlMove] = useState({x: 0, address: '0'})
 	const { address, connector: activeConnector } = useAccount()
-	const { theme } = useTheme()
 	const { chain } = getNetwork()
 
 	const provider = ethers.getDefaultProvider(chain.network)
-	const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
+	const contract = new ethers.Contract(getContractAddress(chain?.id), KalahaData.abi, provider)
 
 	const fetchData = async () => {
 		const data = await contract.state(gameID)
@@ -54,7 +53,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	}
 
 	const { isLoading } = useContractRead({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain.id),
 		abi: KalahaData.abi,
 		functionName: 'state',
 		args: [gameID],
@@ -68,7 +67,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	})
 
 	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain?.id),
 		abi: KalahaData.abi,
 		eventName: 'Move',
 		listener(log) {
@@ -79,7 +78,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	})
 
 	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain?.id),
 		abi: KalahaData.abi,
 		eventName: 'Join',
 		listener() {
@@ -88,7 +87,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	})
 
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
+		address: getContractAddress(chain?.id),
 		abi: [
 			{
 				inputs: [
