@@ -1,10 +1,10 @@
-import { CONTRACT_ADDRESS } from '@/lib/consts'
-import { useEffect, useState } from 'react'
-import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { getContractAddress } from '@/lib/consts'
+import { usePrepareContractWrite, useContractWrite, useNetwork } from 'wagmi'
 
-export const House = ({ isViewer, disable, gameID, turn, value, id, idA, lMove }) => {
+export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
+	const { chain } = useNetwork()
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
+		address: getContractAddress(chain?.id),
 		abi: [
 			{
 				inputs: [
@@ -29,6 +29,7 @@ export const House = ({ isViewer, disable, gameID, turn, value, id, idA, lMove }
 		args: [gameID, id],
 		enabled: false,
 	})
+
 	const { data, write } = useContractWrite(config)
 	return (
 		<button
@@ -37,7 +38,7 @@ export const House = ({ isViewer, disable, gameID, turn, value, id, idA, lMove }
 				await refetch()
 				write?.()
 			}}
-			className={"lg:w-24 lg:h-24 md:w-18 md:h-18 h-12 w-12 dark:bg-dark bg-light rounded-2xl flex justify-center items-center "+ ( lMove==idA ? 'border-4 border-brand ' : '')}
+			className="lg:w-24 lg:h-24 md:w-18 md:h-18 h-12 w-12 dark:bg-dark bg-light rounded-2xl flex justify-center items-center"
 		>
 			<span className="mt-3">{value}</span>
 		</button>
