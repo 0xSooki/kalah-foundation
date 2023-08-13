@@ -29,6 +29,10 @@ const MENU_LIST = [
 		name: 'Contact',
 		path: '/contact',
 	},
+	{
+		name: 'Verify',
+		path: '/verify',
+	},
 ]
 
 export {

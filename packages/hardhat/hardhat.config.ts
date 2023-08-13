@@ -20,7 +20,7 @@ const config: HardhatUserConfig = {
     },
     optimismGoerli: {
       url: process.env.OPTIMISM_KEY,
-      accounts: [process.env.PRIVATE_KEY as string],
+      accounts: [process.env.PRIVATE_KEY1 as string],
     },
     baseGoerli: {
       url: process.env.BASE_GOERLI_RPC,

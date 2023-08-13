@@ -21,6 +21,30 @@ contract Kalaha is IKalaha {
         _;
     }
 
+    constructor(address _kalahVerifier) {
+        kalahVerifier = KalahVerifier(_kalahVerifier);
+    }
+
+    function verify(
+        address signal,
+        uint256 root,
+        uint256 nullifierHash,
+        uint256[8] calldata proof
+    ) external {
+        bool b = kalahVerifier.verifyAndExecute(
+            signal,
+            root,
+            nullifierHash,
+            proof
+        );
+        if (b) {
+            verifiedUsers[msg.sender] = true;
+            emit Verified(msg.sender);
+        } else {
+            emit NotVerified(msg.sender);
+        }
+    }
+
     function state(
         uint256 _game
     )
@@ -41,6 +65,10 @@ contract Kalaha is IKalaha {
             games[_game].nonce,
             games[_game].winner
         );
+    }
+
+    function isVerified(address _user) external view returns (bool) {
+        return verifiedUsers[_user];
     }
 
     function newGame() external virtual override {

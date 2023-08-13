@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./KalahVerifier.sol";
+
 abstract contract IKalaha {
     event NewGame(uint256 _game, address _by);
     event Join(uint256 _game, address _by);
     event Move(uint256 _game, uint8 x, address _by);
     event Win(uint256 _game, address _winner, address _by);
     event Start(uint256 _game, address _by);
+    event Verified(address _by);
+    event NotVerified(address _by);
 
     struct Game {
         address[2] players;
@@ -16,6 +20,8 @@ abstract contract IKalaha {
     }
     uint256 public gameID;
     mapping(uint256 => Game) games;
+    mapping(address => bool) verifiedUsers;
+    KalahVerifier kalahVerifier;
 
     function state(
         uint256 _game
