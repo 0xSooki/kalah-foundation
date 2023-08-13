@@ -4,7 +4,6 @@ import Board from './Board'
 import { useContractRead, useContractEvent, useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
-import Skeleton from 'react-loading-skeleton'
 import { useTheme } from 'next-themes'
 import { shortenAddress } from '@/lib/shortenAddress'
 import { getNetwork } from '@wagmi/core'
@@ -118,14 +117,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 		}
 	}, [activeConnector])
 	if (typeof state == 'undefined' || isLoading) {
-		return (
-			<Skeleton
-				width={944}
-				baseColor={theme == 'light' ? '#64230D' : '#FCF2C1'}
-				highlightColor="#FF822C"
-				height={272}
-			/>
-		)
+		return <div className="text-6xl dark:text-light text-dark font-born ">Loading...</div>
 	} else if (state[0][0] == ethers.ZeroAddress) {
 		return <h1 className="text-3xl dark:text-light text-dark font-bold">Game not found</h1>
 	} else {

@@ -1,7 +1,7 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
 import React, { useEffect, useState } from 'react'
-import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useContractEvent, useAccount } from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
@@ -9,6 +9,13 @@ import { useTheme } from 'next-themes'
 import { dark, darkest, light, lightest } from '@/lib/consts'
 import { useRouter } from 'next/router'
 import abi from '@/artifacts/Kalaha.sol/Kalaha.json'
+
+interface Log {
+	args: {
+		_by: string
+		_game: number
+	}
+}
 
 const Games = () => {
 	const pageSize = 5
@@ -18,6 +25,7 @@ const Games = () => {
 	const [verifiedOnly, setVerifiedOnly] = useState(false)
 	const { theme } = useTheme()
 	const router = useRouter()
+	const { address } = useAccount()
 
 	const { config, refetch } = usePrepareContractWrite({
 		address: CONTRACT_ADDRESS,
@@ -50,6 +58,15 @@ const Games = () => {
 
 	const { write } = useContractWrite(config)
 
+	useContractEvent({
+		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		abi: abi.abi,
+		eventName: 'NewGame',
+		listener(log) {
+			const logData = log[0] as unknown as Log
+			router.push(`/games/${logData.args._game}`)
+		},
+	})
 	const handleLoadMore = () => {
 		fetchMore({
 			variables: {
