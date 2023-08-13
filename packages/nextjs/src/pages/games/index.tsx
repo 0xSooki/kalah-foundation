@@ -44,6 +44,10 @@ const Games = () => {
 		},
 	})
 
+	useEffect(() => {
+		setAllGames([])
+	}, [])
+
 	const { write } = useContractWrite(config)
 
 	const handleLoadMore = () => {
