@@ -26,10 +26,6 @@ const MENU_LIST = [
 		path: '/games',
 	},
 	{
-		name: 'Contact',
-		path: '/contact',
-	},
-	{
 		name: 'Verify',
 		path: '/verify',
 	},
