@@ -15,7 +15,7 @@ interface IGameCard {
 const GameCard: FC<IGameCard> = ({ gameID, address, className = '' }) => {
 	const { chain } = useNetwork()
 	const { config, refetch } = usePrepareContractWrite({
-		address: getContractAddress(chain.id),
+		address: getContractAddress(chain?.id),
 		abi: [
 			{
 				inputs: [
@@ -37,7 +37,7 @@ const GameCard: FC<IGameCard> = ({ gameID, address, className = '' }) => {
 	})
 
 	const { data } = useContractRead({
-		address: getContractAddress(chain.id),
+		address: getContractAddress(chain?.id),
 		abi: abi.abi,
 		functionName: 'isVerified',
 		args: [gameID],
