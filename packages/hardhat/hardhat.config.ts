@@ -21,14 +21,17 @@ const config: HardhatUserConfig = {
     optimismGoerli: {
       url: process.env.OPTIMISM_KEY,
       accounts: [process.env.PRIVATE_KEY as string],
+      gasPrice: 500000000,
     },
     baseGoerli: {
       url: process.env.BASE_GOERLI_RPC,
       accounts: [process.env.PRIVATE_KEY as string],
+      gasPrice: 500000000,
     },
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
       accounts: [process.env.PRIVATE_KEY as string],
+      gasPrice: 500000000,
     },
     zoraGoerli: {
       url: "https://testnet.rpc.zora.energy/",

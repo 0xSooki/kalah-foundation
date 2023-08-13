@@ -1,9 +1,10 @@
-import { CONTRACT_ADDRESS } from '@/lib/consts'
-import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { getContractAddress } from '@/lib/consts'
+import { usePrepareContractWrite, useContractWrite, useNetwork } from 'wagmi'
 
 export const House = ({ isViewer, disable, gameID, turn, value, id }) => {
+	const { chain } = useNetwork()
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
+		address: getContractAddress(chain?.id),
 		abi: [
 			{
 				inputs: [

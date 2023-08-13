@@ -21,6 +21,30 @@ contract Kalaha is IKalaha {
         _;
     }
 
+    constructor(address _kalahVerifier) {
+        kalahVerifier = KalahVerifier(_kalahVerifier);
+    }
+
+    function verify(
+        address signal,
+        uint256 root,
+        uint256 nullifierHash,
+        uint256[8] calldata proof
+    ) external {
+        bool b = kalahVerifier.verifyAndExecute(
+            signal,
+            root,
+            nullifierHash,
+            proof
+        );
+        if (b) {
+            verifiedUsers[msg.sender] = true;
+            emit Verified(msg.sender);
+        } else {
+            emit NotVerified(msg.sender);
+        }
+    }
+
     function state(
         uint256 _game
     )
@@ -43,14 +67,25 @@ contract Kalaha is IKalaha {
         );
     }
 
-    function newGame() external virtual override {
+    function isVerified(address _user) external view returns (bool) {
+        return verifiedUsers[_user];
+    }
+
+    function newGame(
+        bool _verifiedOnly
+    ) external virtual override returns (uint256) {
         gameID++;
+        games[gameID].verifiedOnly = _verifiedOnly;
         games[gameID].players[0] = msg.sender;
         games[gameID].board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
         emit NewGame(gameID, msg.sender);
+        return gameID;
     }
 
     function join(uint256 _game) external virtual override joinable(_game) {
+        if (games[_game].verifiedOnly) {
+            require(verifiedUsers[msg.sender], "Not verified");
+        }
         games[_game].players[1] = msg.sender;
         emit Join(_game, msg.sender);
     }

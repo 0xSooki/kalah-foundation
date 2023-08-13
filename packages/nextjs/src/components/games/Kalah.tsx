@@ -2,12 +2,11 @@ import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
 import { useContractRead, useContractEvent, useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
-import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { ethers } from 'ethers'
-import Skeleton from 'react-loading-skeleton'
 import { useTheme } from 'next-themes'
 import { shortenAddress } from '@/lib/shortenAddress'
 import { getNetwork } from '@wagmi/core'
+import { getContractAddress } from '@/lib/consts'
 
 interface State {
 	players: [string, string]
@@ -35,18 +34,25 @@ interface Props {
 	slug: string
 }
 
+interface Log {
+	args: {
+		x: number
+		_by: string
+	}
+}
+
 const Kalah: FC<Props> = ({ slug }) => {
 	const gameID = BigInt(slug)
 	const [state, setState] = useState<State>()
 	const [win, setWin] = useState(ethers.ZeroAddress)
 	const [isViewer, setIsViewer] = useState(false)
 	const [turn, setTurn] = useState(false)
+	const [lMove, setlMove] = useState({ x: 42, _by: '0' })
 	const { address, connector: activeConnector } = useAccount()
-	const { theme } = useTheme()
 	const { chain } = getNetwork()
 
 	const provider = ethers.getDefaultProvider(chain.network)
-	const contract = new ethers.Contract(`0x${CONTRACT_ADDRESS.substring(2)}`, KalahaData.abi, provider)
+	const contract = new ethers.Contract(getContractAddress(chain?.id), KalahaData.abi, provider)
 
 	const fetchData = async () => {
 		const data = await contract.state(gameID)
@@ -54,7 +60,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	}
 
 	const { isLoading } = useContractRead({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain.id),
 		abi: KalahaData.abi,
 		functionName: 'state',
 		args: [gameID],
@@ -68,16 +74,18 @@ const Kalah: FC<Props> = ({ slug }) => {
 	})
 
 	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain?.id),
 		abi: KalahaData.abi,
 		eventName: 'Move',
-		listener() {
+		listener(log) {
+			const f = log[0] as unknown as Log
 			fetchData()
+			setlMove(f.args)
 		},
 	})
 
 	useContractEvent({
-		address: `0x${CONTRACT_ADDRESS.substring(2)}`,
+		address: getContractAddress(chain?.id),
 		abi: KalahaData.abi,
 		eventName: 'Join',
 		listener() {
@@ -86,7 +94,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	})
 
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
+		address: getContractAddress(chain?.id),
 		abi: [
 			{
 				inputs: [
@@ -114,16 +122,8 @@ const Kalah: FC<Props> = ({ slug }) => {
 			activeConnector.on('change', () => fetchData())
 		}
 	}, [activeConnector])
-
 	if (typeof state == 'undefined' || isLoading) {
-		return (
-			<Skeleton
-				width={944}
-				baseColor={theme == 'light' ? '#64230D' : '#FCF2C1'}
-				highlightColor="#FF822C"
-				height={272}
-			/>
-		)
+		return <div className="text-6xl dark:text-light text-dark font-born ">Loading...</div>
 	} else if (state[0][0] == ethers.ZeroAddress) {
 		return <h1 className="text-3xl dark:text-light text-dark font-bold">Game not found</h1>
 	} else {
@@ -154,6 +154,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 						gameID={gameID}
 						board={state[1]}
 						players={state[0]}
+						lMove={lMove.x + (lMove._by == state[0][0] ? 0 : 7)}
 					/>
 					<div className="w-full flex mt-4">
 						{state[0][1] == ethers.ZeroAddress && state[0][0] != address ? (

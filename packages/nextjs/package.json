@@ -14,6 +14,7 @@
 		"@heroicons/react": "^2.0.18",
 		"@rainbow-me/rainbowkit": "^1.0.7",
 		"@rainbow-me/rainbowkit-siwe-next-auth": "^0.3.0",
+		"@worldcoin/idkit": "^0.5.1",
 		"autoprefixer": "^10.4.14",
 		"ethers": "^6.6.7",
 		"graphql": "^16.7.1",

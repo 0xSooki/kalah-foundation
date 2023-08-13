@@ -26,9 +26,36 @@ const exportAddress = async (
   }
 };
 
+// async function main() {
+//   const kalahFactory = await ethers.getContractFactory("Kalaha");
+//   const kalaha = await kalahFactory.deploy();
+
+//   await kalaha.waitForDeployment();
+//   // await kalaha.connect(deployer).newGame();
+//   // let state = await kalaha.state(1);
+
+//   // console.log(state);
+
+//   console.log(`Kalah deployed to ${kalaha.target}`);
+
+//   await exportAddress("Kalaha", kalaha.target);
+// }
+
 async function main() {
   const kalahFactory = await ethers.getContractFactory("Kalaha");
-  const kalaha = await kalahFactory.deploy();
+  const kalahVerifierFactory = await ethers.getContractFactory("KalahVerifier");
+
+  const kalahVerifier = await kalahVerifierFactory.deploy(
+    "0x515f06B36E6D3b707eAecBdeD18d8B384944c87f",
+    process.env.WLD_APP_ID as string,
+    "user-verification"
+  );
+
+  await kalahVerifier.waitForDeployment();
+
+  console.log(`KalahVerifier deployed to ${kalahVerifier.target}`);
+
+  const kalaha = await kalahFactory.deploy(kalahVerifier.target);
 
   await kalaha.waitForDeployment();
   // await kalaha.connect(deployer).newGame();

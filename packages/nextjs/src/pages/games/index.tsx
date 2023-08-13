@@ -1,32 +1,45 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
 import React, { useEffect, useState } from 'react'
-import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import {
+	usePrepareContractWrite,
+	useContractWrite,
+	useWaitForTransaction,
+	useContractEvent,
+	useAccount,
+	useNetwork,
+} from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
-import { CONTRACT_ADDRESS } from '@/lib/consts'
+import { getContractAddress } from '@/lib/consts'
 import { useTheme } from 'next-themes'
 import { dark, darkest, light, lightest } from '@/lib/consts'
+import { useRouter } from 'next/router'
+import abi from '@/artifacts/Kalaha.sol/Kalaha.json'
+
+interface Log {
+	args: {
+		_by: string
+		_game: number
+	}
+}
 
 const Games = () => {
 	const pageSize = 5
 	const [currentPage, setCurrentPage] = useState(1)
 	const [allGames, setAllGames] = useState([])
 	const [colors, setColors] = useState([])
+	const [verifiedOnly, setVerifiedOnly] = useState(false)
 	const { theme } = useTheme()
+	const router = useRouter()
+	const { address } = useAccount()
+	const { chain } = useNetwork()
 
 	const { config, refetch } = usePrepareContractWrite({
-		address: CONTRACT_ADDRESS,
-		abi: [
-			{
-				inputs: [],
-				name: 'newGame',
-				outputs: [],
-				stateMutability: 'nonpayable',
-				type: 'function',
-			},
-		],
+		address: getContractAddress(chain?.id),
+		abi: abi.abi,
 		functionName: 'newGame',
+		args: [verifiedOnly],
 	})
 
 	const GET_GAMES = gql`
@@ -47,8 +60,21 @@ const Games = () => {
 		},
 	})
 
+	useEffect(() => {
+		setAllGames([])
+	}, [])
+
 	const { write } = useContractWrite(config)
 
+	useContractEvent({
+		address: getContractAddress(chain?.id),
+		abi: abi.abi,
+		eventName: 'NewGame',
+		listener(log) {
+			const logData = log[0] as unknown as Log
+			router.push(`/games/${logData.args._game}`)
+		},
+	})
 	const handleLoadMore = () => {
 		fetchMore({
 			variables: {
@@ -80,21 +106,39 @@ const Games = () => {
 		}
 	}, [theme])
 
+	useEffect(() => {
+		console.log(verifiedOnly)
+	}, [verifiedOnly])
+
 	return (
 		<>
 			<div className="min-h-screen flex bg-light dark:bg-dark flex-col">
 				<div className="mt-24 flex flex-col items-center justify-center">
 					<div className="flex mb-10">
 						<h1 className="font-bold text-4xl text-dark dark:text-light">Active Games</h1>
-						<button
-							onClick={async () => {
-								await refetch()
-								write?.()
-							}}
-							className="btn ml-8 btn-primary dark:btn-secondary"
-						>
-							New Game
-						</button>
+						<div className="flex flex-col">
+							<button
+								onClick={async () => {
+									await refetch()
+									write?.()
+									router.push('/games')
+								}}
+								className="btn ml-8 btn-primary dark:btn-secondary"
+							>
+								New Game
+							</button>
+							{chain?.id === 420 && (
+								<div className="mt-2 flex justify-center items-center ml-7">
+									<input
+										type="checkbox"
+										checked={verifiedOnly}
+										onChange={() => setVerifiedOnly(prev => !prev)}
+										className="mr-2 checkbox checkbox-primary checkbox-sm dark:checkbox-secondary"
+									/>
+									<label className="text-dark dark:text-light font-born text-xl">Verified only</label>
+								</div>
+							)}
+						</div>
 					</div>
 					{allGames.length === 0 ? (
 						<Skeleton

@@ -2,8 +2,19 @@ const APP_NAME = 'Next.js Starter'
 const WALLET_CONNECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
+const OP_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_OP_CONTRACT_ADDRESS
 const GRAPH_API_URL = process.env.NEXT_PUBLIC_GRAPH_API_URL
 const OPTIMISM_KEY = process.env.NEXT_PUBLIC_OPTIMISM_KEY
+
+type address = `0x${string}`
+
+const getContractAddress = (id: number): address => {
+	if (id === 420) {
+		return OP_CONTRACT_ADDRESS as address
+	} else {
+		return CONTRACT_ADDRESS as address
+	}
+}
 
 const brand = '#FF822C'
 const darkest = '#240C04'
@@ -26,8 +37,8 @@ const MENU_LIST = [
 		path: '/games',
 	},
 	{
-		name: 'Contact',
-		path: '/contact',
+		name: 'Verify',
+		path: '/verify',
 	},
 ]
 
@@ -45,4 +56,6 @@ export {
 	mid,
 	light,
 	lightest,
+	OP_CONTRACT_ADDRESS,
+	getContractAddress,
 }
