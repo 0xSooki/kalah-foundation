@@ -132,7 +132,8 @@ const Home: FC = () => {
 														count={4}
 														width={320}
 														height={64}
-														className="mb-3 rounded-3xl"
+														borderRadius={8}
+														className="mb-3"
 														baseColor={colors[0]}
 														highlightColor={colors[1]}
 													/>
@@ -169,8 +170,9 @@ const Home: FC = () => {
 													<Skeleton
 														count={4}
 														width={320}
+														borderRadius={8}
 														height={64}
-														className="mb-3 rounded-3xl"
+														className="mb-3"
 														baseColor={colors[0]}
 														highlightColor={colors[1]}
 													/>
