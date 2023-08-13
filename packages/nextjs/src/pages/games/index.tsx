@@ -127,15 +127,17 @@ const Games = () => {
 							>
 								New Game
 							</button>
-							<div className="mt-2 flex justify-center items-center ml-7">
-								<input
-									type="checkbox"
-									checked={verifiedOnly}
-									onChange={() => setVerifiedOnly(prev => !prev)}
-									className="mr-2 checkbox checkbox-primary checkbox-sm dark:checkbox-secondary"
-								/>
-								<label className="text-dark dark:text-light font-born text-xl">Verified only</label>
-							</div>
+							{chain?.id === 420 && (
+								<div className="mt-2 flex justify-center items-center ml-7">
+									<input
+										type="checkbox"
+										checked={verifiedOnly}
+										onChange={() => setVerifiedOnly(prev => !prev)}
+										className="mr-2 checkbox checkbox-primary checkbox-sm dark:checkbox-secondary"
+									/>
+									<label className="text-dark dark:text-light font-born text-xl">Verified only</label>
+								</div>
+							)}
 						</div>
 					</div>
 					{allGames.length === 0 ? (
