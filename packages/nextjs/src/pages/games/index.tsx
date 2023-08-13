@@ -7,26 +7,23 @@ import Skeleton from 'react-loading-skeleton'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import { useTheme } from 'next-themes'
 import { dark, darkest, light, lightest } from '@/lib/consts'
+import { useRouter } from 'next/router'
+import abi from '@/artifacts/Kalaha.sol/Kalaha.json'
 
 const Games = () => {
 	const pageSize = 5
 	const [currentPage, setCurrentPage] = useState(1)
 	const [allGames, setAllGames] = useState([])
 	const [colors, setColors] = useState([])
+	const [verifiedOnly, setVerifiedOnly] = useState(false)
 	const { theme } = useTheme()
+	const router = useRouter()
 
 	const { config, refetch } = usePrepareContractWrite({
 		address: CONTRACT_ADDRESS,
-		abi: [
-			{
-				inputs: [],
-				name: 'newGame',
-				outputs: [],
-				stateMutability: 'nonpayable',
-				type: 'function',
-			},
-		],
+		abi: abi.abi,
 		functionName: 'newGame',
+		args: [verifiedOnly],
 	})
 
 	const GET_GAMES = gql`
@@ -80,21 +77,37 @@ const Games = () => {
 		}
 	}, [theme])
 
+	useEffect(() => {
+		console.log(verifiedOnly)
+	}, [verifiedOnly])
+
 	return (
 		<>
 			<div className="min-h-screen flex bg-light dark:bg-dark flex-col">
 				<div className="mt-24 flex flex-col items-center justify-center">
 					<div className="flex mb-10">
 						<h1 className="font-bold text-4xl text-dark dark:text-light">Active Games</h1>
-						<button
-							onClick={async () => {
-								await refetch()
-								write?.()
-							}}
-							className="btn ml-8 btn-primary dark:btn-secondary"
-						>
-							New Game
-						</button>
+						<div className="flex flex-col">
+							<button
+								onClick={async () => {
+									await refetch()
+									write?.()
+									router.push('/games')
+								}}
+								className="btn ml-8 btn-primary dark:btn-secondary"
+							>
+								New Game
+							</button>
+							<div className="mt-2 flex justify-center items-center ml-7">
+								<input
+									type="checkbox"
+									checked={verifiedOnly}
+									onChange={() => setVerifiedOnly(prev => !prev)}
+									className="mr-2 checkbox checkbox-primary checkbox-sm dark:checkbox-secondary"
+								/>
+								<label className="text-dark dark:text-light font-born text-xl">Verified only</label>
+							</div>
+						</div>
 					</div>
 					{allGames.length === 0 ? (
 						<Skeleton
