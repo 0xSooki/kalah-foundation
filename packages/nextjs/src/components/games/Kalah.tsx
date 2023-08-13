@@ -65,7 +65,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	}
 
 	const { isLoading } = useContractRead({
-		address: getContractAddress(chain.id),
+		address: getContractAddress(chain?.id),
 		abi: KalahaData.abi,
 		functionName: 'state',
 		args: [gameID],
