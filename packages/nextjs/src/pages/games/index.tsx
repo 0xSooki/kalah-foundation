@@ -5,11 +5,15 @@ import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
 import { CONTRACT_ADDRESS } from '@/lib/consts'
+import { useTheme } from 'next-themes'
+import { dark, darkest, light, lightest } from '@/lib/consts'
 
 const Games = () => {
 	const pageSize = 5
 	const [currentPage, setCurrentPage] = useState(1)
 	const [allGames, setAllGames] = useState([])
+	const [colors, setColors] = useState([])
+	const { theme } = useTheme()
 
 	const { config, refetch } = usePrepareContractWrite({
 		address: CONTRACT_ADDRESS,
@@ -68,6 +72,14 @@ const Games = () => {
 		}
 	}, [data])
 
+	useEffect(() => {
+		if (theme === 'dark') {
+			setColors([light, lightest])
+		} else {
+			setColors([dark, darkest])
+		}
+	}, [theme])
+
 	return (
 		<>
 			<div className="min-h-screen flex bg-light dark:bg-dark flex-col">
@@ -86,12 +98,13 @@ const Games = () => {
 					</div>
 					{allGames.length === 0 ? (
 						<Skeleton
-							highlightColor="#FFFFFF"
+							baseColor={colors[0]}
+							highlightColor={colors[1]}
 							count={8}
 							width={320}
 							containerClassName="flex w-screen justify-center flex-wrap"
-							className="m-4 shadow-xl rounded-3xl dark:bg-light bg-dark"
-							borderRadius={12}
+							className="m-4 shadow-xl rounded-3xl"
+							borderRadius={16}
 							height={180}
 						/>
 					) : (
