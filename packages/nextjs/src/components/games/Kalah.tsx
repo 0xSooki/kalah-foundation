@@ -34,13 +34,20 @@ interface Props {
 	slug: string
 }
 
+interface Log {
+	args: {
+		x: number
+		_by: string
+	}
+}
+
 const Kalah: FC<Props> = ({ slug }) => {
 	const gameID = BigInt(slug)
 	const [state, setState] = useState<State>()
 	const [win, setWin] = useState(ethers.ZeroAddress)
 	const [isViewer, setIsViewer] = useState(false)
 	const [turn, setTurn] = useState(false)
-	const [lMove, setlMove] = useState({x: 0, address: '0'})
+	const [lMove, setlMove] = useState({ x: 0, _by: '0' })
 	const { address, connector: activeConnector } = useAccount()
 	const { chain } = getNetwork()
 
@@ -71,7 +78,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 		abi: KalahaData.abi,
 		eventName: 'Move',
 		listener(log) {
-			const f = log[0]
+			const f = log[0] as unknown as Log
 			fetchData()
 			setlMove(f.args)
 		},
@@ -147,7 +154,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 						gameID={gameID}
 						board={state[1]}
 						players={state[0]}
-						lMove={(lMove.x + ((lMove._by == state[0][0]) ? 0 : 7))}
+						lMove={lMove.x + (lMove._by == state[0][0] ? 0 : 7)}
 					/>
 					<div className="w-full flex mt-4">
 						{state[0][1] == ethers.ZeroAddress && state[0][0] != address ? (
