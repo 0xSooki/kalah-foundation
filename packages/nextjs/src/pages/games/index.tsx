@@ -1,14 +1,7 @@
 import GameCard from '@/components/games/GameCard'
 import Header from '@/components/header/Header'
 import React, { useEffect, useState } from 'react'
-import {
-	usePrepareContractWrite,
-	useContractWrite,
-	useWaitForTransaction,
-	useContractEvent,
-	useAccount,
-	useNetwork,
-} from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useContractEvent, useAccount, useNetwork } from 'wagmi'
 import { gql, useQuery } from '@apollo/client'
 import Skeleton from 'react-loading-skeleton'
 import { getContractAddress } from '@/lib/consts'

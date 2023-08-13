@@ -17,6 +17,16 @@ const getContractAddress = (id: number): address => {
 	}
 }
 
+const getProvider = (id: number) => {
+	if (id === 999) {
+		return 'https://testnet.rpc.zora.energy'
+	} else if (id === 84531) {
+		return 'ttps://goerli.base.org'
+	} else {
+		return 'https://goerli.optimism.io'
+	}
+}
+
 const getGraphUrl = (id: number) => {
 	if (id === 84531) {
 		return process.env.NEXT_PUBLIC_GRAPH_API_URL_BASE
@@ -69,4 +79,5 @@ export {
 	getContractAddress,
 	getGraphUrl,
 	GRAPH_API_URL_BASE,
+	getProvider,
 }
