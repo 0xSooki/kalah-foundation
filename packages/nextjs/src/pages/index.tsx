@@ -1,17 +1,29 @@
 /* eslint-disable react/no-unescaped-entities */
 import { FC, use, useEffect, useState } from 'react'
-import { CONTRACT_ADDRESS, OP_CONTRACT_ADDRESS, getContractAddress } from '@/lib/consts'
+import { CONTRACT_ADDRESS, OP_CONTRACT_ADDRESS, getContractAddress, getGraphUrl } from '@/lib/consts'
 import KalahData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import { useContractEvent, useNetwork } from 'wagmi'
-import { gql, useQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { shortenAddress } from '@/lib/shortenAddress'
 import Skeleton from 'react-loading-skeleton'
 import { useTheme } from 'next-themes'
 import { dark, darkest, light, lightest } from '@/lib/consts'
 
+interface Game {
+	id: string
+	player1: string
+	player2: string
+}
+
+interface Data {
+	games: Game[]
+}
+
 const Home: FC = () => {
 	const [moveHistory, setMoveHistory] = useState([])
 	const [colors, setColors] = useState([])
+	const [data, setData] = useState<Data>()
+	const [data2, setData2] = useState<Data>()
 	const { theme } = useTheme()
 	const { chain } = useNetwork()
 
@@ -47,10 +59,6 @@ const Home: FC = () => {
 		}
 	`
 
-	const { loading, error, data } = useQuery(GET_GAMES)
-
-	const { loading: loading2, error: error2, data: data2 } = useQuery(GET_STARTED_GAMES)
-
 	useEffect(() => {
 		if (theme === 'light') {
 			setColors([light, lightest])
@@ -58,6 +66,50 @@ const Home: FC = () => {
 			setColors([dark, darkest])
 		}
 	}, [theme])
+
+	const fetchData = async () => {
+		fetch(getGraphUrl(chain?.id), {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query: ` {
+				games(first: 4, where: { player2: "0x0000000000000000000000000000000000000000" }) {
+					id
+					gameID
+					player1
+					player2
+				}
+			}`,
+			}),
+		})
+			.then(res => res.json())
+			.then(res => setData(res.data))
+
+		fetch(getGraphUrl(chain?.id), {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query: ` {
+						games(first: 4, where: { player2_not: "0x0000000000000000000000000000000000000000" }) {
+							id
+							gameID
+							player1
+							player2
+						}
+					}`,
+			}),
+		})
+			.then(res => res.json())
+			.then(res => setData2(res.data))
+	}
+
+	useEffect(() => {
+		fetchData()
+	}, [])
+
+	useEffect(() => {
+		fetchData()
+	}, [chain?.id])
 
 	return (
 		<>
@@ -150,7 +202,7 @@ const Home: FC = () => {
 									<div className="card-body items-center text-center">
 										<h2 className="card-title font-born text-3xl">Most recent games</h2>
 										<div className="w-full">
-											{loading || typeof data == 'undefined' ? (
+											{typeof data == 'undefined' ? (
 												<>
 													<Skeleton
 														count={4}
@@ -189,7 +241,7 @@ const Home: FC = () => {
 									<div className="card-body items-center text-center">
 										<h2 className="card-title font-born text-3xl">Recently started games</h2>
 										<div className="w-full">
-											{loading2 || typeof data2 == 'undefined' ? (
+											{typeof data2 == 'undefined' ? (
 												<>
 													<Skeleton
 														count={4}
