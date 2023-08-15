@@ -113,6 +113,9 @@ const Home: FC = () => {
 
 	return (
 		<>
+			<head>
+				<title>Home</title>
+			</head>
 			<div className="flex flex-col min-h-screen bg-light dark:bg-dark py-2">
 				<div className="mx-10 mb-24">
 					<div className="text-dark mb-10 font-born dark:text-light text-4xl mt-24 text-center">

@@ -181,6 +181,9 @@ const Games = () => {
 
 	return (
 		<>
+			<head>
+				<title>Game Explorer</title>
+			</head>
 			<div className="min-h-screen flex bg-light dark:bg-dark flex-col">
 				<div className="mt-24 flex flex-col items-center justify-center">
 					<div className="flex mb-10">
