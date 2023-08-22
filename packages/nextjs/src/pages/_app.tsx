@@ -7,7 +7,7 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { SessionProvider } from 'next-auth/react'
 import type { Session } from 'next-auth'
 import { AppProps } from 'next/app'
-import { WagmiConfig } from 'wagmi'
+import { WagmiConfig, useNetwork } from 'wagmi'
 import '@rainbow-me/rainbowkit/styles.css'
 import { darkTheme, getDefaultWallets, lightTheme } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig } from 'wagmi'
@@ -15,7 +15,7 @@ import { sepolia, baseGoerli, optimismGoerli, zoraTestnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { useTheme } from 'next-themes'
-import { ALCHEMY_ID, WALLET_CONNECT_ID } from '@/lib/consts'
+import { ALCHEMY_ID, GRAPH_API_URL_BASE, WALLET_CONNECT_ID, getGraphUrl } from '@/lib/consts'
 import { GRAPH_API_URL } from '@/lib/consts'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import Header from '@/components/header/Header'
@@ -37,8 +37,13 @@ const wagmiConfig = createConfig({
 	publicClient,
 })
 
-const client = new ApolloClient({
+const clientOp = new ApolloClient({
 	uri: GRAPH_API_URL,
+	cache: new InMemoryCache(),
+})
+
+const clientBase = new ApolloClient({
+	uri: GRAPH_API_URL_BASE,
 	cache: new InMemoryCache(),
 })
 
@@ -60,7 +65,7 @@ const App = ({
 							modalSize="compact"
 							chains={chains}
 						>
-							<ApolloProvider client={client}>
+							<ApolloProvider client={clientOp}>
 								<div className="flex flex-col min-h-screen">
 									<Header />
 									<main className="relative mt-12 flex flex-col flex-1">

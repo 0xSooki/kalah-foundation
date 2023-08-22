@@ -35,37 +35,44 @@ export default function Verify() {
 	const { write } = useContractWrite(config)
 	if (chain?.id === 420) {
 		return (
-			<div className="flex flex-col min-h-screen bg-light dark:bg-dark items-center justify-center py-2">
-				{data ? (
-					<div className="text-4xl dark:text-light text-dark font-born">Already verified</div>
-				) : proof ? (
-					<div>
-						<button className="btn btn-primary dark:bg-secondary text-light dark:text-dark" onClick={write}>
-							verify
-						</button>
-					</div>
-				) : (
-					<div>
-						<IDKitWidget
-							signal={address}
-							action="user-verification"
-							onSuccess={setProof}
-							app_id={process.env.NEXT_PUBLIC_WLD_APP_ID!}
-						>
-							{({ open }) => (
-								<button className="btn btn-primary dark:bg-secondary text-light dark:text-dark" onClick={open}>
-									verify with world id
-								</button>
-							)}
-						</IDKitWidget>
-					</div>
-				)}
-			</div>
+			<>
+				<head>
+					<title>Verify</title>
+				</head>
+				<div className="flex flex-col min-h-screen bg-light dark:bg-dark items-center justify-center py-2">
+					{data ? (
+						<div className="text-4xl dark:text-light text-dark font-born">Already verified</div>
+					) : proof ? (
+						<div>
+							<button className="btn btn-primary dark:bg-secondary text-light dark:text-dark" onClick={write}>
+								verify
+							</button>
+						</div>
+					) : (
+						<div>
+							<IDKitWidget
+								signal={address}
+								action="user-verification"
+								onSuccess={setProof}
+								app_id={process.env.NEXT_PUBLIC_WLD_APP_ID!}
+							>
+								{({ open }) => (
+									<button className="btn btn-primary dark:bg-secondary text-light dark:text-dark" onClick={open}>
+										verify with world id
+									</button>
+								)}
+							</IDKitWidget>
+						</div>
+					)}
+				</div>
+			</>
 		)
 	} else {
 		return (
 			<>
-				{' '}
+				<head>
+					<title>Game Explorer</title>
+				</head>
 				<div className="flex flex-col min-h-screen bg-light dark:bg-dark items-center justify-center py-2">
 					<div className="text-4xl dark:text-light text-center text-dark font-born">
 						Verification currently is only

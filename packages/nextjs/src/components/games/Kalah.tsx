@@ -1,12 +1,17 @@
 import React, { useState, useEffect, FC } from 'react'
 import KalahaData from '@/artifacts/Kalaha.sol/Kalaha.json'
 import Board from './Board'
-import { useContractRead, useContractEvent, useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
+import {
+	useContractRead,
+	useContractEvent,
+	useAccount,
+	useContractWrite,
+	usePrepareContractWrite,
+	useNetwork,
+} from 'wagmi'
 import { ethers } from 'ethers'
-import { useTheme } from 'next-themes'
 import { shortenAddress } from '@/lib/shortenAddress'
-import { getNetwork } from '@wagmi/core'
-import { getContractAddress } from '@/lib/consts'
+import { getContractAddress, getProvider } from '@/lib/consts'
 
 interface State {
 	players: [string, string]
@@ -49,9 +54,9 @@ const Kalah: FC<Props> = ({ slug }) => {
 	const [turn, setTurn] = useState(false)
 	const [lMove, setlMove] = useState({ x: 42, _by: '0' })
 	const { address, connector: activeConnector } = useAccount()
-	const { chain } = getNetwork()
+	const { chain } = useNetwork()
 
-	const provider = ethers.getDefaultProvider(chain.network)
+	const provider = new ethers.JsonRpcProvider(getProvider(chain?.id))
 	const contract = new ethers.Contract(getContractAddress(chain?.id), KalahaData.abi, provider)
 
 	const fetchData = async () => {
@@ -60,7 +65,7 @@ const Kalah: FC<Props> = ({ slug }) => {
 	}
 
 	const { isLoading } = useContractRead({
-		address: getContractAddress(chain.id),
+		address: getContractAddress(chain?.id),
 		abi: KalahaData.abi,
 		functionName: 'state',
 		args: [gameID],
